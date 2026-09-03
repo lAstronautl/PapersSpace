@@ -1,0 +1,22 @@
+[gd_resource type="Theme" format=3 uid="uid://bbe45eeafbywu"]
+
+[ext_resource type="StyleBox" uid="uid://dxk2rcr5alypq" path="res://misc/flat.tres" id="1"]
+[ext_resource type="FontFile" uid="uid://dtdao38g8dqly" path="res://m3x6.ttf" id="2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o6qyv"]
+
+[resource]
+default_font = ExtResource("2")
+HScrollBar/styles/grabber = ExtResource("1")
+HScrollBar/styles/grabber_highlight = ExtResource("1")
+HScrollBar/styles/grabber_pressed = ExtResource("1")
+HScrollBar/styles/scroll = ExtResource("1")
+HScrollBar/styles/scroll_focus = ExtResource("1")
+TextEdit/styles/focus = SubResource("StyleBoxEmpty_o6qyv")
+TextEdit/styles/normal = ExtResource("1")
+TextEdit/styles/read_only = ExtResource("1")
+VScrollBar/styles/grabber = ExtResource("1")
+VScrollBar/styles/grabber_highlight = ExtResource("1")
+VScrollBar/styles/grabber_pressed = ExtResource("1")
+VScrollBar/styles/scroll = ExtResource("1")
+VScrollBar/styles/scroll_focus = ExtResource("1")

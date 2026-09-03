@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://m618yotj3ngp"]
+
+[ext_resource type="Texture2D" uid="uid://bw3sdr6quga2c" path="res://png/pointing.png" id="1"]
+[ext_resource type="Script" uid="uid://c0a23dco7b4yt" path="res://scripts/pointingArrowBehavior.gd" id="2"]
+
+[node name="PointingArrow" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+offset_left = -16.0
+offset_right = 16.0
+offset_bottom = 32.0
+texture = ExtResource("1")
+script = ExtResource("2")

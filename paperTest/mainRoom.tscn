@@ -1,0 +1,298 @@
+[gd_scene format=3 uid="uid://dnsduts63umxn"]
+
+[ext_resource type="Script" uid="uid://6lvi2mtsuj6n" path="res://scripts/itemLoader.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://t3r8676lttb" path="res://prefabs/disk.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://cdg2688qhm514" path="res://prefabs/paper.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bf772ynb2pq3" path="res://prefabs/weh.tscn" id="4"]
+[ext_resource type="Script" uid="uid://coaqq387jvfdj" path="res://scripts/itemInteractionControler.gd" id="5"]
+[ext_resource type="Texture2D" uid="uid://c4veskq11ypb4" path="res://png/tile/dark.png" id="6"]
+[ext_resource type="PackedScene" uid="uid://c46obxc76l6in" path="res://prefabs/AO.tscn" id="7"]
+[ext_resource type="Script" uid="uid://ssw7bmi20qq2" path="res://scripts/onMousePosition.gd" id="8"]
+[ext_resource type="Script" uid="uid://15oyexrf2j6d" path="res://scripts/spawner.gd" id="9"]
+[ext_resource type="PackedScene" uid="uid://m618yotj3ngp" path="res://prefabs/pointingArrow.tscn" id="10"]
+[ext_resource type="FontFile" uid="uid://dtdao38g8dqly" path="res://m3x6.ttf" id="11"]
+[ext_resource type="Script" uid="uid://dkiay04rh4lw8" path="res://scripts/fileEditor.gd" id="12"]
+[ext_resource type="Theme" uid="uid://bbe45eeafbywu" path="res://misc/flatTheme.tres" id="13"]
+[ext_resource type="StyleBox" uid="uid://dxk2rcr5alypq" path="res://misc/flat.tres" id="14"]
+[ext_resource type="StyleBox" uid="uid://dsxmbv0xxplnb" path="res://misc/flatDark.tres" id="15"]
+[ext_resource type="StyleBox" uid="uid://cjj6i5vod1mcc" path="res://misc/flatLight.tres" id="16"]
+[ext_resource type="Script" uid="uid://bfu3hnjaijf8j" path="res://scripts/nameEdit.gd" id="17"]
+[ext_resource type="StyleBox" uid="uid://bc0ytnap86r75" path="res://misc/flatRed.tres" id="18"]
+[ext_resource type="Script" uid="uid://c25oue26431ii" path="res://scripts/versionNotice.gd" id="19"]
+[ext_resource type="PackedScene" uid="uid://d2osv5wl3wdpm" path="res://prefabs/light.tscn" id="20"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_club8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iiqwj"]
+
+[node name="root" type="Node2D" unique_id=338956204]
+texture_filter = 1
+
+[node name="itemLoader" type="Node2D" parent="." unique_id=1539397051]
+script = ExtResource("1")
+diskScene = ExtResource("2")
+paperScene = ExtResource("3")
+wehScene = ExtResource("4")
+
+[node name="itemInteractionControler" type="Node2D" parent="." unique_id=499599145]
+script = ExtResource("5")
+
+[node name="env" type="Node2D" parent="." unique_id=1146637253]
+
+[node name="floor" type="TextureRect" parent="env" unique_id=146501724]
+z_index = -4
+texture_filter = 1
+texture_repeat = 2
+offset_right = 192.0
+offset_bottom = 192.0
+texture = ExtResource("6")
+stretch_mode = 1
+
+[node name="AOs" type="Node2D" parent="env" unique_id=490535075]
+
+[node name="AO" parent="env/AOs" unique_id=880579369 instance=ExtResource("7")]
+z_index = -2
+scale = Vector2(1, 6)
+
+[node name="AO2" parent="env/AOs" unique_id=1766801565 instance=ExtResource("7")]
+z_index = -2
+position = Vector2(192, 192.00002)
+rotation = -3.1415925
+scale = Vector2(1, 6)
+
+[node name="AO3" parent="env/AOs" unique_id=599174113 instance=ExtResource("7")]
+z_index = -2
+position = Vector2(-3.8146973e-06, 192)
+rotation = -1.5707964
+scale = Vector2(1, 6)
+
+[node name="AO4" parent="env/AOs" unique_id=1215818461 instance=ExtResource("7")]
+z_index = -2
+position = Vector2(192, 0)
+rotation = 1.5707964
+scale = Vector2(1, 6)
+
+[node name="walls" type="StaticBody2D" parent="env" unique_id=1364573343]
+
+[node name="west" type="CollisionShape2D" parent="env/walls" unique_id=1449966540]
+rotation = 1.5707964
+shape = SubResource("WorldBoundaryShape2D_club8")
+
+[node name="north" type="CollisionShape2D" parent="env/walls" unique_id=326486649]
+rotation = 3.1415927
+shape = SubResource("WorldBoundaryShape2D_club8")
+
+[node name="east" type="CollisionShape2D" parent="env/walls" unique_id=1185772373]
+position = Vector2(192, 192)
+rotation = 4.712389
+shape = SubResource("WorldBoundaryShape2D_club8")
+
+[node name="south" type="CollisionShape2D" parent="env/walls" unique_id=566149282]
+position = Vector2(192, 192)
+rotation = 6.2831855
+shape = SubResource("WorldBoundaryShape2D_club8")
+
+[node name="items" type="Node2D" parent="." unique_id=851823581]
+y_sort_enabled = true
+
+[node name="mousePin" type="PinJoint2D" parent="." unique_id=802571696]
+script = ExtResource("8")
+
+[node name="fakeBody" type="StaticBody2D" parent="mousePin" unique_id=1468026530]
+
+[node name="spawner" type="Node2D" parent="mousePin" unique_id=529259095]
+script = ExtResource("9")
+pointingArrow = ExtResource("10")
+document = ExtResource("3")
+
+[node name="Label" type="Label" parent="mousePin" unique_id=539458971]
+visible = false
+z_index = 8
+texture_filter = 1
+offset_left = 6.0
+offset_top = -3.0
+offset_right = 46.0
+offset_bottom = 10.0
+theme_override_fonts/font = ExtResource("11")
+text = "uhh..."
+
+[node name="ColorRect" type="ColorRect" parent="mousePin/Label" unique_id=1763631814]
+z_index = -1
+layout_mode = 0
+offset_left = -2.0
+offset_top = 3.0
+offset_right = 38.0
+offset_bottom = 14.0
+color = Color(0, 0, 0, 0.39215687)
+
+[node name="fileEditor" type="Control" parent="." unique_id=1034155256]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("12")
+
+[node name="TextEdit" type="TextEdit" parent="fileEditor" unique_id=1849028079]
+z_index = 4
+texture_filter = 1
+layout_direction = 4
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 141.0
+offset_bottom = 188.0
+theme = ExtResource("13")
+theme_override_constants/line_spacing = -4
+placeholder_text = "<This page was left intentionally blank>"
+context_menu_enabled = false
+wrap_mode = 1
+indent_wrapped_lines = true
+virtual_keyboard_enabled = false
+scroll_smooth = true
+scroll_v_scroll_speed = 20.0
+highlight_all_occurrences = true
+
+[node name="save" type="Button" parent="fileEditor" unique_id=281656563]
+visible = false
+z_index = 6
+texture_filter = 1
+layout_mode = 0
+offset_left = 109.0
+offset_top = 168.0
+offset_right = 132.0
+offset_bottom = 181.0
+theme_override_fonts/font = ExtResource("11")
+theme_override_styles/normal = ExtResource("14")
+theme_override_styles/pressed = ExtResource("15")
+theme_override_styles/hover = ExtResource("16")
+theme_override_styles/disabled = ExtResource("15")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iiqwj")
+
+[node name="Label" type="Label" parent="fileEditor/save" unique_id=503250269]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -2.0
+offset_right = 20.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("11")
+text = "save"
+
+[node name="close" type="Button" parent="fileEditor" unique_id=1786768106]
+z_index = 6
+texture_filter = 1
+layout_mode = 0
+offset_left = 162.0
+offset_top = 4.0
+offset_right = 188.0
+offset_bottom = 17.0
+theme_override_fonts/font = ExtResource("11")
+theme_override_styles/normal = ExtResource("14")
+theme_override_styles/pressed = ExtResource("15")
+theme_override_styles/hover = ExtResource("16")
+theme_override_styles/disabled = ExtResource("15")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iiqwj")
+
+[node name="Label" type="Label" parent="fileEditor/close" unique_id=179875017]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -2.0
+offset_right = 20.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("11")
+text = "close"
+
+[node name="NameEdit" type="TextEdit" parent="fileEditor" unique_id=128009920]
+z_index = 4
+texture_filter = 1
+layout_direction = 4
+layout_mode = 0
+offset_left = 160.0
+offset_top = 4.0
+offset_right = 264.0
+offset_bottom = 21.0
+rotation = 1.5707964
+theme = ExtResource("13")
+theme_override_constants/line_spacing = -4
+placeholder_text = "name"
+context_menu_enabled = false
+emoji_menu_enabled = false
+script = ExtResource("17")
+
+[node name="rmConfirm" type="Button" parent="fileEditor" unique_id=538207493]
+visible = false
+z_index = 6
+texture_filter = 1
+layout_mode = 0
+offset_left = 161.0
+offset_top = 160.0
+offset_right = 188.0
+offset_bottom = 173.0
+theme_override_fonts/font = ExtResource("11")
+theme_override_styles/normal = ExtResource("14")
+theme_override_styles/pressed = ExtResource("15")
+theme_override_styles/hover = ExtResource("18")
+theme_override_styles/disabled = ExtResource("15")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iiqwj")
+
+[node name="Label" type="Label" parent="fileEditor/rmConfirm" unique_id=2031421817]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -2.0
+offset_right = 20.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("11")
+text = "sure?"
+
+[node name="rm" type="Button" parent="fileEditor" unique_id=138626352]
+z_index = 6
+texture_filter = 1
+layout_mode = 0
+offset_left = 171.0
+offset_top = 175.0
+offset_right = 188.0
+offset_bottom = 188.0
+theme_override_fonts/font = ExtResource("11")
+theme_override_styles/normal = ExtResource("14")
+theme_override_styles/pressed = ExtResource("15")
+theme_override_styles/hover = ExtResource("16")
+theme_override_styles/disabled = ExtResource("15")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iiqwj")
+
+[node name="Label" type="Label" parent="fileEditor/rm" unique_id=1892442859]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -2.0
+offset_right = 20.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("11")
+text = "rm"
+
+[node name="versionNotice" type="Label" parent="." unique_id=221059125]
+offset_left = 2.0
+offset_top = 179.0
+offset_right = 42.0
+offset_bottom = 192.0
+text = "v0.2.5"
+script = ExtResource("19")
+decay = 1.0
+delay = 1000
+
+[node name="lighting" type="Node2D" parent="." unique_id=1954564798]
+
+[node name="CanvasModulate" type="CanvasModulate" parent="lighting" unique_id=264424674]
+color = Color(0.176, 0.18239999, 0.2, 1)
+
+[node name="Light" parent="lighting" unique_id=499845213 instance=ExtResource("20")]
+position = Vector2(16, 48)
+
+[node name="Light2" parent="lighting" unique_id=1859260787 instance=ExtResource("20")]
+position = Vector2(16, 144)
+
+[node name="Light3" parent="lighting" unique_id=63916643 instance=ExtResource("20")]
+position = Vector2(176, 144)
+rotation = 1.5707964
+
+[node name="Light4" parent="lighting" unique_id=2118092518 instance=ExtResource("20")]
+position = Vector2(176, 48)
+rotation = 1.5707964

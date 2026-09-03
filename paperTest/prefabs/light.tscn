@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://d2osv5wl3wdpm"]
+
+[ext_resource type="Texture2D" uid="uid://driiyqosf72s6" path="res://png/furniture/light.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://bgdkfhpf6b2o7" path="res://png/furniture/lightTubeOn.png" id="2"]
+
+[sub_resource type="Gradient" id="Gradient_g7e2u"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_i6w5d"]
+gradient = SubResource("Gradient_g7e2u")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.16666667, 0.16666667)
+metadata/_snap_enabled = true
+metadata/_snap_count = 12
+
+[node name="Light" type="Sprite2D" unique_id=499845213]
+z_index = -3
+rotation = -1.5707964
+texture = ExtResource("1")
+
+[node name="LightTubeOn" type="Sprite2D" parent="." unique_id=318091411]
+z_index = 1
+texture = ExtResource("2")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=545230185]
+rotation = 1.5707964
+color = Color(0.75, 0.73399997, 0.69, 1)
+texture = SubResource("GradientTexture2D_i6w5d")
+texture_scale = 4.0

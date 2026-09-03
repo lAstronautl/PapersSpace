@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://t3r8676lttb"]
+
+[ext_resource type="Material" uid="uid://bsea5sow584ri" path="res://shaders/outline.tres" id="1"]
+[ext_resource type="Texture2D" uid="uid://cfymittqot40t" path="res://png/item/disk/disk3.png" id="2"]
+[ext_resource type="Script" uid="uid://ut3mj4c3yu0a" path="res://scripts/spritePickRandom.gd" id="3"]
+[ext_resource type="Texture2D" uid="uid://b0akr0ii7cqtd" path="res://png/item/disk/disk0.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://nn0g6a35f1g" path="res://png/item/disk/disk1.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://sb5xwcx7m7b2" path="res://png/item/disk/disk2.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://dcnlmvstyr7ns" path="res://png/item/disk/disk4.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://crcwj58lknyx4" path="res://png/item/disk/disk5.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://dj0pfewpdaqfq" path="res://png/item/disk/disk6.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://ct8jrjyh1ovmi" path="res://png/item/disk/disk7.png" id="10"]
+[ext_resource type="Script" uid="uid://chctncmofsrfq" path="res://scripts/sfxOnCollide.gd" id="11"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_club8"]
+size = Vector2(12, 12)
+
+[node name="disk" type="RigidBody2D"]
+y_sort_enabled = true
+collision_layer = 2
+input_pickable = true
+contact_monitor = true
+max_contacts_reported = 2
+metadata/type = "flop"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_club8")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("2")
+script = ExtResource("3")
+arr = [ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("2"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10")]
+
+[node name="shadow" type="Sprite2D" parent="CollisionShape2D"]
+modulate = Color(0, 0, 0, 0.39215687)
+show_behind_parent = true
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("2")
+
+[node name="sfxOnCollide" type="Node2D" parent="."]
+script = ExtResource("11")
+sfxPath = "res://sfx/weak_hit1.ogg"

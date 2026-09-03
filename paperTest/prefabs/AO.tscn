@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c46obxc76l6in"]
+
+[ext_resource type="Texture2D" uid="uid://cyaaxa2pq8exy" path="res://prefabs/new_gradient_texture_1d.tres" id="1"]
+
+[node name="AO" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 32.0
+offset_bottom = 32.0
+texture = ExtResource("1")

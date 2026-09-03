@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cdg2688qhm514"]
+
+[ext_resource type="Material" uid="uid://bsea5sow584ri" path="res://shaders/outline.tres" id="1"]
+[ext_resource type="Texture2D" uid="uid://fvxoc7fpxkdq" path="res://png/item/paper/paper.png" id="2"]
+[ext_resource type="Script" uid="uid://bci0yhw1edjoa" path="res://scripts/spriteDynamic.gd" id="3"]
+[ext_resource type="Texture2D" uid="uid://dfgwtcea6xrwc" path="res://png/item/paper/paper_words.png" id="4"]
+[ext_resource type="Script" uid="uid://chctncmofsrfq" path="res://scripts/sfxOnCollide.gd" id="5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_club8"]
+size = Vector2(12, 14)
+
+[node name="paper" type="RigidBody2D"]
+y_sort_enabled = true
+collision_layer = 2
+input_pickable = true
+contact_monitor = true
+max_contacts_reported = 2
+metadata/type = "txt"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_club8")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("2")
+script = ExtResource("3")
+activeTexture = ExtResource("4")
+notActiveTexture = ExtResource("2")
+
+[node name="shadow" type="Sprite2D" parent="CollisionShape2D"]
+modulate = Color(0, 0, 0, 0.39215687)
+show_behind_parent = true
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("4")
+
+[node name="sfxOnCollide" type="Node2D" parent="."]
+script = ExtResource("5")
+sfxPath = "res://sfx/weak_hit2.ogg"
