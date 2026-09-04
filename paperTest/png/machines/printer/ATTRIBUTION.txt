@@ -1,0 +1,9 @@
+printer_icon.png, printer_idle.png, printer_inserting.png, printer_building.png
+copied from Corvax space-station-14, Resources/Textures/Corvax/Structures/Machines/printer.rsi.
+License: CC-BY-SA-3.0.
+Copyright: Resprite by Hqlle (Github).
+
+toner_cartridge.png copied from the StarHorizon repository (Space Station 14 fork),
+Resources/Textures/Objects/Devices/cartridge.rsi/cart-log.png (LogProbeCartridge prototype).
+License: CC-BY-SA-3.0.
+Copyright: cart-log made by Skarletto (Github).

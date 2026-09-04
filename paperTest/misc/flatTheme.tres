@@ -1,12 +1,13 @@
 [gd_resource type="Theme" format=3 uid="uid://bbe45eeafbywu"]
 
 [ext_resource type="StyleBox" uid="uid://dxk2rcr5alypq" path="res://misc/flat.tres" id="1"]
-[ext_resource type="FontFile" uid="uid://dtdao38g8dqly" path="res://m3x6.ttf" id="2"]
+[ext_resource type="FontFile" path="res://fonts/NotoSans/NotoSans-Regular.ttf" id="2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o6qyv"]
 
 [resource]
 default_font = ExtResource("2")
+default_font_size = 8
 HScrollBar/styles/grabber = ExtResource("1")
 HScrollBar/styles/grabber_highlight = ExtResource("1")
 HScrollBar/styles/grabber_pressed = ExtResource("1")

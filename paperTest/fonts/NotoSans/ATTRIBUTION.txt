@@ -1,0 +1,9 @@
+NotoSans-Regular.ttf copied from the StarHorizon repository (Space Station 14 fork),
+Resources/Fonts/NotoSans/NotoSans-Regular.ttf.
+
+Noto Sans is designed by Google and licensed under the Apache License 2.0.
+See LICENSE.txt in this folder for full license text.
+
+Used here as a fallback font for m3x6.ttf (see misc/pixelFontWithCyrillic.tres) so
+that Cyrillic and other non-Latin text renders correctly instead of showing
+tofu/placeholder boxes, since m3x6 only covers Latin glyphs.

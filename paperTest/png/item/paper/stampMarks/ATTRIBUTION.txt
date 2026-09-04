@@ -1,0 +1,11 @@
+Stamp mark (paper_stamp-*) sprites copied from the StarHorizon repository
+(Space Station 14 fork), Resources/Textures/Objects/Misc/bureaucracy.rsi/.
+License: CC-BY-SA-3.0.
+
+Copyright: Taken from tgstation at
+https://github.com/tgstation/tgstation/commit/e1142f20f5e4661cb6845cfcf2dd69f864d67432.
+paper_stamp-syndicate by Veritius. paper_stamp-greytide by ubaser.
+paper_stamp-psychologist by clinux. paper_stamp-wizard by brassicaprime69 (Discord).
+
+Note: AnCo faction stamp marks (paper_stamp-anco/dcs/dipp/miligalax/stardust/subea)
+were intentionally NOT copied due to a restrictive source license on the matching item sprite.

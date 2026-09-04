@@ -1,0 +1,10 @@
+Sprite states copied from the StarHorizon repository (Space Station 14 fork),
+Resources/Textures/Structures/Piping/disposal.rsi.
+License: CC-BY-SA-3.0.
+Copyright: ported from discordia-space/CEV-Eris (icons/obj/pipes/disposal.dmi),
+modified by DrSmugleaf; disposal bins by EmoGarbage404.
+
+Files:
+- recycler_idle.png (from disposal.png)
+- recycler_flush.png (from disposal-flush.png)
+- recycler_ready.png (from dispover-ready.png)

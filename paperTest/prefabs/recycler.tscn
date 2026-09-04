@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://dr7k2p9m4x6w1"]
+
+[ext_resource type="Script" path="res://scripts/recycler.gd" id="1"]
+[ext_resource type="Texture2D" path="res://png/machines/recycler/recycler_idle.png" id="2"]
+[ext_resource type="PackedScene" uid="uid://b8k3n5q7m1x4r" path="res://prefabs/recyclerEditor.tscn" id="3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rcy1"]
+size = Vector2(32, 32)
+
+[node name="recycler" type="Area2D"]
+collision_layer = 128
+collision_mask = 94
+input_pickable = true
+script = ExtResource("1")
+recyclerEditorScene = ExtResource("3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_rcy1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+
+[node name="ReadyOverlay" type="Sprite2D" parent="."]

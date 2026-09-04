@@ -1,0 +1,6 @@
+Pen sprites copied from the StarHorizon repository (Space Station 14 fork),
+Resources/Textures/Objects/Misc/pens.rsi/pen.png and overpriced_pen.png.
+License: CC-BY-SA-3.0.
+
+Copyright: Taken from tgstation at
+https://github.com/tgstation/tgstation/commit/e1142f20f5e4661cb6845cfcf2dd69f864d67432.

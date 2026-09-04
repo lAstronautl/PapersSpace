@@ -1,0 +1,21 @@
+Paper background textures in this folder are rendered PNG exports of SVG assets
+copied from the StarHorizon repository (Space Station 14 fork):
+https://github.com/ (StarHorizon), Resources/Textures/Interface/Paper/
+
+Files:
+- paper_background_default.png
+- paper_background_book.png
+- paper_background_dotmatrix.png
+- paper_background_perforated.png
+- paper_background_blood_red.png
+- paper_content_lined.png
+- paper_content_dotmatrix.png
+
+See StarHorizon's Resources/Textures/Interface/Paper/attributions.yml and its
+repository license files (LICENSE.TXT / LICENSE-AGPLv3.txt) for asset licensing terms.
+
+Note: paper_background_perforated.png and paper_background_dotmatrix.png are
+UI reading-window backgrounds (PaperVisuals.backgroundImagePath) for
+PaperNanoTaskItem/ForensicReportPaper and PaperArtifactAnalyzer respectively -
+distinct from those prototypes' WORLD-sprite states (paper_receipt*/
+paper_dotmatrix*), which live in the parent png/item/paper/ folder instead.

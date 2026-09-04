@@ -1,11 +1,19 @@
 extends Node2D
 
+const PaperVariants = preload("res://scripts/paperVariants.gd")
+
 @onready var itemsParent = $"../items"
 @onready var backgroundTextureRect = $"../env/floor"
 
 @export var diskScene: PackedScene
 @export var paperScene: PackedScene
 @export var wehScene: PackedScene
+@export var labelerScene: PackedScene
+@export var stampScene: PackedScene
+@export var penScene: PackedScene
+@export var cyberPenScene: PackedScene
+@export var tonerCartridgeScene: PackedScene
+@export var paperScrapScene: PackedScene
 
 var saveFilePath = "user://items.save"
 var customBGPath = "user://background.png"
@@ -70,10 +78,21 @@ func loadItems(path: String):
 			instance.set_meta(key, node_data.meta[key])
 
 		if instance.get_meta("type") == "txt":
+			var sprite = instance.get_node("CollisionShape2D").get_node("Sprite2D")
+			if instance.has_meta("paperStyle"):
+				sprite.setPaperStyle(instance.get_meta("paperStyle"))
+			var variantConfig = PaperVariants.getConfig(instance.get_meta("paperVariant", "default"))
+			if variantConfig.has("worldTexture"):
+				sprite.setVariantTextures(load(variantConfig.worldTexture), load(variantConfig.get("worldTextureEmpty", variantConfig.worldTexture)))
 			if instance.get_meta("content").length() > 0:
-				instance.get_node("CollisionShape2D").get_node("Sprite2D").setActiveTexture(true)
+				sprite.setActiveTexture(true)
 			else:
-				instance.get_node("CollisionShape2D").get_node("Sprite2D").setActiveTexture(false)
+				sprite.setActiveTexture(false)
+			if instance.has_meta("stamps"):
+				instance.get_node("CollisionShape2D/StampOverlay").loadStamps(instance.get_meta("stamps"))
+
+		if instance.get_meta("type") == "stamp" and instance.has_meta("stampState"):
+			instance.setVariant(instance.get_meta("stampState"))
 
 		itemsParent.add_child(instance)
 
@@ -87,6 +106,18 @@ func getSceneFromType(type: String) -> PackedScene:
 			return diskScene
 		"weh":
 			return wehScene
+		"labeler":
+			return labelerScene
+		"stamp":
+			return stampScene
+		"pen":
+			return penScene
+		"cyberPen":
+			return cyberPenScene
+		"tonerCartridge":
+			return tonerCartridgeScene
+		"paperScrap":
+			return paperScrapScene
 	return null
 
 func loadBG(path: String):
@@ -109,15 +140,21 @@ func _ready() -> void :
 	if OS.is_debug_build():
 		saveFilePath = "user://DEBUG.save"
 
+	# The tutorial paper is a regular item placed directly in mainRoom.tscn
+	# (node "tutorialPaper") rather than spawned here, so it behaves exactly
+	# like any other item (movable, stampable, saved/loaded normally). Its
+	# localized name/content is only filled in once, the first time the game
+	# ever runs (i.e. before any save file exists to load over it).
+	var hasSaveFile = FileAccess.file_exists(saveFilePath)
+
 	loadItems(saveFilePath)
 	loadBG(customBGPath)
 
-	if itemsParent.get_child_count() < 1:
-		var tutorial = paperScene.instantiate()
-		tutorial.name = "right click me"
-		tutorial.set_meta("content", "hi! :3\nthis is a note-taking program i made for fun. i hope you enjoy it.\n\ncontrols:\nLMB - drag item around\nRMB - edit hovered item\nA/D - rotate held item\nE - snap to 45d angle\nspace - make new paper\nESC - close item editor\n\nall your items are saved when you close the program.")
+	if not hasSaveFile and itemsParent.has_node("tutorialPaper"):
+		var tutorial = itemsParent.get_node("tutorialPaper")
+		tutorial.name = tr("item_tutorial_name")
+		tutorial.set_meta("content", tr("item_tutorial_content"))
 		tutorial.get_node("CollisionShape2D").get_node("Sprite2D").setActiveTexture(true)
-		itemsParent.add_child(tutorial)
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
