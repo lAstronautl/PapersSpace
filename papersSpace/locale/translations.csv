@@ -1,0 +1,92 @@
+keys,en,ru
+ui_save,save,сохр
+ui_close,close,закр
+ui_name_placeholder,name,имя
+ui_blank_page_placeholder,<This page was left intentionally blank>,<Эта страница специально оставлена пустой>
+ui_stamp,stamp,штмп
+ui_label_applied,Label applied successfully,Этикетка успешно наклеена
+ui_stamp_applied,Stamp applied successfully,Штамп успешно поставлен
+ui_pen_blocked,This pen cannot write over stamps,Эта ручка не может писать поверх штампов
+ui_printer_copy,copy,копир
+ui_printer_print,print,печать
+ui_printer_eject,eject,извлечь
+ui_printer_ready,ready,готов
+ui_printer_busy,working...,работает...
+ui_printer_paper_loaded,paper loaded,бумага загружена
+ui_printer_toner,toner: %d/%d,тонер: %d/%d
+ui_printer_refilled,Toner refilled,Тонер заправлен
+ui_printer_full,Printer toner is already full,Тонер в принтере уже полон
+ui_recycler_flush,flush,смыть
+ui_recycler_eject,eject,извлечь
+ui_recycler_ready,ready,готов
+ui_recycler_busy,working...,работает...
+ui_recycler_item_loaded,items: %d,предметов: %d
+stamp_name_default,A very important person,Очень важная персона
+stamp_name_cap,Captain,Капитан
+stamp_name_ce,Chief Engineer,Старший инженер
+stamp_name_centcom,CentComm,Центком
+stamp_name_chaplain,Chaplain,Священник
+stamp_name_clown,Clown,Клоун
+stamp_name_cmo,Chief Medical Officer,Главврач
+stamp_name_deny,DENIED,ОТКАЗАНО
+stamp_name_detective,Detective,Детектив
+stamp_name_greytide,Greytide,Грейтайд
+stamp_name_hop,Head of Personnel,Глава персонала
+stamp_name_hos,Head of Security,Глава службы безопасности
+stamp_name_lawyer,Lawyer,Юрист
+stamp_name_mime,Mime,Мим
+stamp_name_nf_bailiff,Bailiff,Бейлиф
+stamp_name_nf_doc,Director of Care,Менеджер медицинских операций
+stamp_name_nf_doctor,Doctor,Доктор
+stamp_name_nf_engineer,Engineer,Инженер
+stamp_name_nf_pal,Public Affairs Liaison,Офицер по связям с общественностью
+stamp_name_nf_plant_manager,Plant Manager,Управляющий электростанцией
+stamp_name_nf_psychologist,Psychologist,Психолог
+stamp_name_nf_sheriff,Sheriff,Шериф
+stamp_name_nf_stc,Traffic Controller,Диспетчер
+stamp_name_ok,APPROVED,ОДОБРЕНО
+stamp_name_psychologist,Psychologist,Психолог
+stamp_name_qm,Quartermaster,Квартирмейстер
+stamp_name_rd,Research Director,Научный руководитель
+stamp_name_syndicate,Syndicate,Синдикат
+stamp_name_trader,Trader,Торговец
+stamp_name_warden,Warden,Смотритель
+stamp_name_wizard,Wizard,Волшебник
+item_tutorial_name,right click me,кликни по мне ПКМ
+item_tutorial_content,"hi! :3
+this is a note-taking program i made for fun. i hope you enjoy it.
+
+controls:
+LMB - drag item around
+RMB - edit hovered item
+A/D - rotate held item
+Q - snap to 45d angle
+use the printer to print or copy paper (E to open, E while holding paper to insert it)
+T - spawn a new stamp (cycles through variants)
+drag a labeler/stamp/pen onto paper and press E to apply it
+a pen must be used before you can edit a paper's text
+a stamped paper needs a CyberPen to edit again
+L - switch language
+ESC - close item editor
+
+you can use [b]bold[/b], [i]italic[/i], [u]underline[/u] and [color=red]colored[/color] text - it renders formatted once you close editing (use a pen to write, then let it lock again to see it rendered).
+
+all your items are saved when you close the program.","привет! :3
+это программа для заметок, которую я сделал(а) для развлечения. надеюсь, она вам понравится.
+
+управление:
+ЛКМ - перетаскивать предмет
+ПКМ - редактировать предмет под курсором
+A/D - вращать предмет в руке
+Q - привязать к углу 45°
+используйте принтер, чтобы напечатать или скопировать бумагу (E чтобы открыть, E с бумагой в руке чтобы вставить её)
+T - создать новый штамп (перебирает варианты)
+перетащите маркировщик/штамп/ручку на бумагу и нажмите E, чтобы применить
+для редактирования текста бумаги сначала нужно применить ручку
+проштампованную бумагу можно снова редактировать только CyberPen'ом
+L - сменить язык
+ESC - закрыть редактор
+
+можно использовать [b]жирный[/b], [i]курсив[/i], [u]подчёркнутый[/u] и [color=red]цветной[/color] текст - он отобразится отформатированным, когда бумага снова станет доступна только для чтения (после ручки, когда её действие закончится).
+
+все ваши предметы сохраняются при закрытии программы."

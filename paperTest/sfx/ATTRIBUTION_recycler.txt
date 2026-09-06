@@ -1,7 +1,0 @@
-recycler_insert.ogg copied from the StarHorizon repository (Space Station 14 fork),
-Resources/Audio/Effects/trashbag1.ogg.
-License: CC-BY-SA-3.0 (SS14 upstream default, no per-file override in attributions.yml).
-
-recycler_flush.ogg copied from the StarHorizon repository (Space Station 14 fork),
-Resources/Audio/Machines/disposalflush.ogg.
-License: CC-BY-SA-3.0 (SS14 upstream default, no per-file override in attributions.yml).

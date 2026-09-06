@@ -1,6 +1,0 @@
-labeler.png copied from the StarHorizon repository (Space Station 14 fork),
-Resources/Textures/Objects/Tools/hand_labeler.rsi/hand_labeler.png.
-
-Original source: tgstation (https://github.com/tgstation/tgstation),
-commit 44636483b7b2868b3e42c92205539f11f6d7968f.
-License: CC-BY-SA-3.0.

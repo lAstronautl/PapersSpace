@@ -1,6 +1,0 @@
-labeler_beep.ogg copied from the StarHorizon repository (Space Station 14 fork),
-Resources/Audio/Effects/Cargo/beep.ogg.
-
-"Store Scanner Beep" by zerolagtime.
-License: CC0-1.0.
-Source: https://freesound.org/people/zerolagtime/sounds/144418/
