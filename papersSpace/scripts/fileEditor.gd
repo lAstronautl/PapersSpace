@@ -8,6 +8,7 @@ const dragMarginSize = 16.0
 @onready var textEditor: TextEdit = $layout/ScrollingContents/TextEdit
 @onready var previewLabel: RichTextLabel = $layout/ScrollingContents/previewLabel
 @onready var saveButton: Button = $layout/bottomBar/save
+@onready var fillStatus: Label = $layout/bottomBar/fillStatus
 @onready var paperBackground = $PaperBackground
 @onready var stampDisplay: Control = $stampDisplay
 @onready var headerMargin: MarginContainer = $layout/headerMargin
@@ -20,8 +21,13 @@ const StampInfo = preload("res://scripts/stampInfo.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
 const SpriteDynamic = preload("res://scripts/spriteDynamic.gd")
 const stampBorderTexture = preload("res://png/item/paper/stampMarks/stamp_border.png")
+# Mirrors StarHorizon's StampWidget XAML: StampedByLabel uses the
+# "LabelHeadingBigger" style class, which is notoSansBold20 - stamps read as
+# bold, not the regular weight used for the page's own written text.
+const stampFont = preload("res://fonts/NotoSans/NotoSans-Bold.ttf")
 
 var currentItem: RigidBody2D
+var maxContentLength: int = 10000
 
 enum DragMode { NONE = 0, MOVE = 1, TOP = 2, BOTTOM = 4, LEFT = 8, RIGHT = 16 }
 var currentDrag = DragMode.NONE
@@ -53,6 +59,7 @@ func open(item: RigidBody2D) -> void :
 	textEditor.text = item.get_meta("content")
 
 	currentItem = item
+	maxContentLength = PaperVariants.getContentSize(item.get_meta("paperVariant", "default"))
 
 	# Mirrors StarHorizon's PaperWindow.xaml.cs InitVisuals(): every visual
 	# element (background/header/footer/content image + their margins/tints)
@@ -146,13 +153,38 @@ func refreshWritingLock() -> void :
 	textEditor.visible = isWriteMode
 	previewLabel.visible = not isWriteMode
 	if not isWriteMode:
-		previewLabel.text = _toSafeBBCode(textEditor.text)
+		# Mirrors SS14's PaperWindow.xaml.cs Populate(): a truly blank page (no
+		# text, not currently being written on) shows the generic "intentionally
+		# left blank" notice in LabelSecondaryColor gray (BlankPaperIndicator),
+		# distinct from actual written content which renders in the darker
+		# PaperWrittenText color (#111111, set as previewLabel's default_color
+		# in the scene).
+		if textEditor.text.is_empty():
+			previewLabel.text = tr("ui_blank_page_placeholder")
+			previewLabel.add_theme_color_override("default_color", Color(0.098039, 0.098039, 0.098039, 1))
+		else:
+			previewLabel.text = _toSafeBBCode(textEditor.text)
+			previewLabel.remove_theme_color_override("default_color")
 
 	# Mirrors SS14: a read-only paper is just a prop - you can grab and drag
 	# the window from anywhere, including on top of its text, not only its
 	# empty margins. Only while actively writing does clicking the text need
 	# to place a cursor instead, so the label stops eating mouse input then.
 	previewLabel.mouse_filter = Control.MOUSE_FILTER_IGNORE if not isWriteMode else Control.MOUSE_FILTER_STOP
+
+	# Mirrors SS14's PaperWindow.xaml: FillStatus only lives inside the
+	# write-mode InputContainer, so it's hidden entirely outside write mode.
+	fillStatus.visible = isWriteMode
+	if isWriteMode:
+		_updateFillStatus()
+
+# Mirrors SS14's PaperWindow.xaml.cs UpdateFillState(): shows "current/max"
+# and disables the save button once the text exceeds ContentSize (10000 by
+# default - see PaperComponent.ContentSize / PaperVariants.getContentSize).
+func _updateFillStatus() -> void :
+	var currentLength = textEditor.text.length()
+	fillStatus.text = "%d/%d" % [currentLength, maxContentLength]
+	saveButton.disabled = currentLength > maxContentLength
 
 func refreshStamps() -> void :
 	for child in stampDisplay.get_children():
@@ -217,7 +249,8 @@ func _addStampWidget(stampState: String, orientation: float, centerPos: Vector2)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", stampColor)
-	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_font_override("font", stampFont)
+	label.add_theme_font_size_override("font_size", 20)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	widget.add_child(label)
 
@@ -250,6 +283,13 @@ func _toSafeBBCode(rawText: String) -> String:
 	return escaped
 
 func save() -> void :
+	# Mirrors SS14's OnInputTextMessage: text longer than ContentSize is
+	# rejected outright (the paper keeps its previous content) rather than
+	# truncated - the fill indicator/disabled save button already warn the
+	# player before they'd hit this.
+	if textEditor.text.length() > maxContentLength:
+		return
+
 	currentItem.set_meta("content", textEditor.text)
 
 	if currentItem.get_meta("type") == "txt":
@@ -273,6 +313,7 @@ func _visibility_changed():
 			currentItem.set_meta("writingUnlocked", false)
 
 func _text_changed():
+	_updateFillStatus()
 	save()
 
 func _input(event: InputEvent) -> void :

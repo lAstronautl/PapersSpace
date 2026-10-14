@@ -1,6 +1,7 @@
 extends Node2D
 
 const StampInfo = preload("res://scripts/stampInfo.gd")
+const PaperVariants = preload("res://scripts/paperVariants.gd")
 
 @export var paperEditorScene: PackedScene
 @export var labelerEditorScene: PackedScene
@@ -185,6 +186,14 @@ func applyPenToOverlaps(penItem: RigidBody2D) -> void :
 		if body.get_meta("type", "") != "txt":
 			continue
 		if body.global_position.distance_to(penItem.global_position) <= penApplyRadius:
+			# Mirrors SS14's OnInteractUsing: EditingDisabled (e.g. printed
+			# acquisition slips, see PaperVariants.isEditingDisabled) is checked
+			# before the stamp-based editable check and blocks writing outright,
+			# with no bypass - not even WriteIgnoreStamps/CyberPen can override it.
+			if PaperVariants.isEditingDisabled(body.get_meta("paperVariant", "default")):
+				_playFeedback(penItem.global_position, null, tr("ui_paper_tamper_proof"), true)
+				continue
+
 			var stamps: Array = body.get_meta("stamps", [])
 			# Mirrors SS14's OnInteractUsing editable check: unstamped paper is
 			# always writable; a stamped paper needs WriteIgnoreStamps (full

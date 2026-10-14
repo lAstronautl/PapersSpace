@@ -45,12 +45,18 @@ const variants = {
 	"captains_thoughts": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("e6e6fa"), "headerImagePath": "res://png/item/paper/headers/header_captains_thoughts.png", "contentMargin": Vector4(32, 0, 32, 16)},
 	},
-	"colored_yellow": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "yellow"},
-	"colored_green": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "green"},
-	"colored_red": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "red"},
-	"colored_orange": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "orange"},
-	"colored_blue": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "blue"},
-	"colored_purple": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)}, "color": "purple"},
+	# Mirrors StarHorizon's _NF/Entities/Objects/Misc/paper.yml PaperColored*
+	# family: plain Paper (parent: Paper) with only a Sprite color + a
+	# PaperVisuals.backgroundModulate override - no unique backgroundImagePath,
+	# so the UI reading window falls back to PaperDefaultBorder
+	# (paper_background_default, 16px patch margin) tinted by backgroundModulate,
+	# same as every other undecorated colored paper variant here.
+	"colored_yellow": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("fff4b5")}, "color": "yellow"},
+	"colored_green": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("bae6ba")}, "color": "green"},
+	"colored_red": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("f4b5b5")}, "color": "red"},
+	"colored_orange": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("f9c7a1")}, "color": "orange"},
+	"colored_blue": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("b7dcfa")}, "color": "blue"},
+	"colored_purple": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("dfb7fa")}, "color": "purple"},
 	"forensic_scanner": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(6, 0, 6, 0), "headerImagePath": "res://png/item/paper/headers/header_forensic_scanner.png", "headerMargin": Vector4(0, 4, 0, 0), "contentMargin": Vector4(12, 0, 6, 0), "maxWritableArea": Vector2(368, 256)},
 		"worldTexture": "res://png/item/paper/paper_receipt_horizontal_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt_horizontal.png",
@@ -63,6 +69,13 @@ const variants = {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(0, 6, 0, 6), "headerImagePath": "res://png/item/paper/headers/header_nanotask.png", "headerMargin": Vector4(0, 6, 0, 0), "contentMargin": Vector4(12, 0, 12, 0), "maxWritableArea": Vector2(256, 0)},
 		"worldTexture": "res://png/item/paper/paper_receipt_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt.png",
 	},
+	# Mirrors StarHorizon's DiagnosisReportPaper (Entities/Structures/Machines/
+	# Medical/disease_diagnoser.yml) - same perforated receipt look/margins as
+	# nanotask, just the virus header and a narrower writable width (128 vs 256).
+	"disease_diagnosis": {
+		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(0, 6, 0, 6), "headerImagePath": "res://png/item/paper/headers/header_virus.png", "headerMargin": Vector4(0, 6, 0, 0), "contentMargin": Vector4(12, 0, 12, 0), "maxWritableArea": Vector2(128, 0)},
+		"worldTexture": "res://png/item/paper/paper_receipt_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt.png",
+	},
 	"artifact_analyzer": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_dotmatrix.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(37, 0, 37, 0), "headerImagePath": "res://png/item/paper/headers/header_artifact_analyzer.png", "headerMargin": Vector4(0, 16, 0, 0), "contentImagePath": "res://png/item/paper/backgrounds/paper_content_dotmatrix.png", "contentImageNumLines": 2, "contentMargin": Vector4(16, 0, 16, 16), "maxWritableArea": Vector2(400, 0)},
 		"worldTexture": "res://png/item/paper/paper_dotmatrix_words.png", "worldTextureEmpty": "res://png/item/paper/paper_dotmatrix.png",
@@ -73,22 +86,27 @@ const variants = {
 	"acquisition_medical": {
 		"visuals": {"headerImagePath": "res://png/item/paper/headers/header_acquisition_medical.png", "footerImagePath": "res://png/item/paper/footers/footer_barcode.png", "contentMargin": Vector4(16, 16, 16, 16), "maxWritableArea": Vector2(512, 512)},
 		"worldTexture": "res://png/item/paper/paper_acquisition_form_words.png", "worldTextureEmpty": "res://png/item/paper/paper_acquisition_form.png",
+		"editingDisabled": true,
 	},
 	"acquisition_science": {
 		"visuals": {"headerImagePath": "res://png/item/paper/headers/header_acquisition_science.png", "footerImagePath": "res://png/item/paper/footers/footer_barcode.png", "contentMargin": Vector4(16, 16, 16, 16), "maxWritableArea": Vector2(512, 512)},
 		"worldTexture": "res://png/item/paper/paper_acquisition_form_words.png", "worldTextureEmpty": "res://png/item/paper/paper_acquisition_form.png",
+		"editingDisabled": true,
 	},
 	"acquisition_security": {
 		"visuals": {"headerImagePath": "res://png/item/paper/headers/header_acquisition_security.png", "footerImagePath": "res://png/item/paper/footers/footer_barcode.png", "contentMargin": Vector4(16, 16, 16, 16), "maxWritableArea": Vector2(512, 512)},
 		"worldTexture": "res://png/item/paper/paper_acquisition_form_words.png", "worldTextureEmpty": "res://png/item/paper/paper_acquisition_form.png",
+		"editingDisabled": true,
 	},
 	"acquisition_cargo": {
 		"visuals": {"headerImagePath": "res://png/item/paper/headers/header_acquisition_cargo.png", "footerImagePath": "res://png/item/paper/footers/footer_barcode.png", "contentMargin": Vector4(16, 16, 16, 16), "maxWritableArea": Vector2(512, 512)},
 		"worldTexture": "res://png/item/paper/paper_acquisition_form_words.png", "worldTextureEmpty": "res://png/item/paper/paper_acquisition_form.png",
+		"editingDisabled": true,
 	},
 	"acquisition_engineering": {
 		"visuals": {"headerImagePath": "res://png/item/paper/headers/header_acquisition_engineering.png", "footerImagePath": "res://png/item/paper/footers/footer_barcode.png", "contentMargin": Vector4(16, 16, 16, 16), "maxWritableArea": Vector2(512, 512)},
 		"worldTexture": "res://png/item/paper/paper_acquisition_form_words.png", "worldTextureEmpty": "res://png/item/paper/paper_acquisition_form.png",
+		"editingDisabled": true,
 	},
 	"cnc_sheet": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("cccccc"), "contentImagePath": "res://png/item/paper/backgrounds/paper_content_lined.png", "contentImageModulate": Color("cccccc"), "contentMargin": Vector4(16, 16, 16, 16)},
@@ -311,6 +329,18 @@ static func getContent(variantId: String) -> String:
 
 static func getConfig(variantId: String) -> Dictionary:
 	return variants.get(variantId, variants["default"])
+
+# Mirrors SS14's PaperComponent.EditingDisabled: true on the AcquisitionSlip
+# family (Resources/Prototypes/Entities/Objects/Misc/acquisition_slips.yml,
+# `Paper.editingDisabled: true`) - these forms can never be written on again
+# once printed, regardless of pen/CyberPen, only stamped.
+static func isEditingDisabled(variantId: String) -> bool:
+	return getConfig(variantId).get("editingDisabled", false)
+
+# Mirrors SS14's PaperComponent.ContentSize (default 10000 everywhere in the
+# ported prototype set - no variant overrides it to a smaller value).
+static func getContentSize(variantId: String) -> int:
+	return getConfig(variantId).get("contentSize", 10000)
 
 # Mirrors PaperVisualsComponent's C# field defaults exactly, so callers don't
 # need to null-check every field: BackgroundModulate/ContentImageModulate/

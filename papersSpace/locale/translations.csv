@@ -7,6 +7,7 @@ ui_stamp,stamp,штмп
 ui_label_applied,Label applied successfully,Этикетка успешно наклеена
 ui_stamp_applied,Stamp applied successfully,Штамп успешно поставлен
 ui_pen_blocked,This pen cannot write over stamps,Эта ручка не может писать поверх штампов
+ui_paper_tamper_proof,This page was written using tamper-proof ink,Текст на странице был написан с использованием нефальсицицируемых чернил
 ui_printer_copy,copy,копир
 ui_printer_print,print,печать
 ui_printer_eject,eject,извлечь
@@ -32,7 +33,7 @@ stamp_name_deny,DENIED,ОТКАЗАНО
 stamp_name_detective,Detective,Детектив
 stamp_name_greytide,Greytide,Грейтайд
 stamp_name_hop,Head of Personnel,Глава персонала
-stamp_name_hos,Head of Security,Глава службы безопасности
+stamp_name_hos,Sheriff,Глава службы безопасности
 stamp_name_lawyer,Lawyer,Юрист
 stamp_name_mime,Mime,Мим
 stamp_name_nf_bailiff,Bailiff,Бейлиф
@@ -50,7 +51,7 @@ stamp_name_qm,Quartermaster,Квартирмейстер
 stamp_name_rd,Research Director,Научный руководитель
 stamp_name_syndicate,Syndicate,Синдикат
 stamp_name_trader,Trader,Торговец
-stamp_name_warden,Warden,Смотритель
+stamp_name_warden,Bailiff,Смотритель
 stamp_name_wizard,Wizard,Волшебник
 item_tutorial_name,right click me,кликни по мне ПКМ
 item_tutorial_content,"hi! :3

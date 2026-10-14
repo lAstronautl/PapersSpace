@@ -56,7 +56,7 @@ text = "close"
 
 [node name="PaperBackground" type="NinePatchRect" parent="."]
 mouse_filter = 0
-texture_filter = 0
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,15 +69,6 @@ patch_margin_top = 16
 patch_margin_right = 16
 patch_margin_bottom = 16
 script = ExtResource("3")
-
-[node name="perforation" type="Control" parent="."]
-mouse_filter = 2
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="linedBackground" type="TextureRect" parent="."]
 visible = false
@@ -143,10 +134,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4")
-theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
-theme_override_colors/font_readonly_color = Color(0.1, 0.1, 0.1, 1)
-theme_override_colors/font_placeholder_color = Color(0.05, 0.05, 0.05, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.066667, 0.066667, 0.066667, 1)
+theme_override_colors/font_readonly_color = Color(0.066667, 0.066667, 0.066667, 1)
+theme_override_colors/font_placeholder_color = Color(0.098039, 0.098039, 0.098039, 1)
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_writeMode")
 theme_override_styles/focus = SubResource("StyleBoxFlat_writeMode")
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_paper")
@@ -165,9 +156,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4")
-theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/default_color = Color(0.066667, 0.066667, 0.066667, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_paper")
-theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/normal_font_size = 12
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
@@ -184,6 +175,15 @@ stretch_mode = 3
 [node name="bottomBar" type="HBoxContainer" parent="layout"]
 layout_mode = 2
 alignment = 2
+
+[node name="fillStatus" type="Label" parent="layout/bottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("5")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.662745, 0.662745, 0.662745, 1)
+horizontal_alignment = 0
+vertical_alignment = 1
 
 [node name="save" type="Button" parent="layout/bottomBar"]
 visible = false
