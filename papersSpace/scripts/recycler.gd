@@ -83,6 +83,8 @@ func _input(event: InputEvent) -> void :
 	if not hovering or not event.is_pressed() or not event.is_action("orientDocument"):
 		return
 
+	if itemInteractionControler.isHoldingWrench():
+		return
 	var heldItem = itemInteractionControler.heldItem
 	if itemInteractionControler.dragging and heldItem:
 		_tryInsert(heldItem)

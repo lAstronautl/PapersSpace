@@ -13,6 +13,7 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 @export var penScene: PackedScene
 @export var tonerCartridgeScene: PackedScene
 @export var paperScrapScene: PackedScene
+@export var wrenchScene: PackedScene
 
 var saveFilePath = "user://items.save"
 var customBGPath = "user://background.png"
@@ -164,6 +165,8 @@ func getSceneFromType(type: String) -> PackedScene:
 			return tonerCartridgeScene
 		"paperScrap":
 			return paperScrapScene
+		"wrench":
+			return wrenchScene
 	return null
 
 func loadBG(path: String):

@@ -14,6 +14,7 @@ const otherItems = {
 	"labeler": "res://png/item/labeler/labeler.png",
 	"tonerCartridge": "res://png/machines/printer/toner_cartridge.png",
 	"paperScrap": "res://png/item/paper/paper_scrap.png",
+	"wrench": "res://png/item/wrench/wrench.png",
 }
 
 static func entries() -> Array:

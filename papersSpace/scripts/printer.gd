@@ -132,6 +132,8 @@ func _input(event: InputEvent) -> void :
 	if not hovering or not event.is_pressed() or not event.is_action("orientDocument"):
 		return
 
+	if itemInteractionControler.isHoldingWrench():
+		return
 	var heldItem = itemInteractionControler.heldItem
 	var isHoldingPaper = itemInteractionControler.dragging and heldItem and heldItem.get_meta("type", "") == "txt"
 

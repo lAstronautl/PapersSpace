@@ -118,3 +118,6 @@ ui_vend_item_weh,weh,вех
 ui_vend_item_labeler,hand labeler,ручной этикетировщик
 ui_vend_item_tonerCartridge,toner cartridge,картридж с тонером
 ui_vend_item_paperScrap,paper scrap,клочок бумаги
+ui_vend_item_wrench,wrench,гаечный ключ
+ui_anchored,Anchored,Закреплено
+ui_unanchored,Unanchored,Не закреплено

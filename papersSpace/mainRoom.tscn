@@ -35,6 +35,8 @@
 [ext_resource type="AudioStream" path="res://sfx/toner_insert.ogg" id="43"]
 [ext_resource type="Texture2D" path="res://png/background/space_stars.png" id="44"]
 [ext_resource type="PackedScene" path="res://prefabs/vending.tscn" id="45"]
+[ext_resource type="PackedScene" path="res://prefabs/wrench.tscn" id="46"]
+[ext_resource type="Script" path="res://scripts/anchorable.gd" id="47"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_club8"]
 
@@ -89,6 +91,7 @@ stampScene = ExtResource("30")
 penScene = ExtResource("32")
 tonerCartridgeScene = ExtResource("38")
 paperScrapScene = ExtResource("39")
+wrenchScene = ExtResource("46")
 
 [node name="itemInteractionControler" type="Node2D" parent="worldView/worldViewport" unique_id=499599145]
 script = ExtResource("5")
@@ -157,13 +160,22 @@ position = Vector2(170, 100)
 scanSound = ExtResource("36")
 printSound = ExtResource("37")
 
+[node name="Anchorable" type="Node" parent="worldView/worldViewport/printer"]
+script = ExtResource("47")
+
 [node name="recycler" parent="worldView/worldViewport" instance=ExtResource("40")]
 position = Vector2(170, 140)
 insertSound = ExtResource("41")
 flushSound = ExtResource("42")
 
+[node name="Anchorable" type="Node" parent="worldView/worldViewport/recycler"]
+script = ExtResource("47")
+
 [node name="vending" parent="worldView/worldViewport" instance=ExtResource("45")]
 position = Vector2(170, 56)
+
+[node name="Anchorable" type="Node" parent="worldView/worldViewport/vending"]
+script = ExtResource("47")
 
 [node name="items" type="Node2D" parent="worldView/worldViewport" unique_id=851823581]
 y_sort_enabled = true

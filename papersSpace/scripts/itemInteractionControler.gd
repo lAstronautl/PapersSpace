@@ -4,6 +4,7 @@ const StampInfo = preload("res://scripts/stampInfo.gd")
 const PenInfo = preload("res://scripts/penInfo.gd")
 const SignerName = preload("res://scripts/signerName.gd")
 const penClickSound = preload("res://sfx/pen_click.ogg")
+const ratchetSound = preload("res://sfx/ratchet.ogg")
 const PaperSounds = preload("res://scripts/paperSounds.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
 
@@ -174,6 +175,8 @@ func _setDelay(item: RigidBody2D, delayId: String, seconds: float) -> void :
 # The name an item shows when hovered, in the current language.
 func getItemDisplayName(item: Node) -> String:
 	match item.get_meta("type", ""):
+		"wrench":
+			return tr("ui_vend_item_wrench")
 		"pen":
 			return tr(PenInfo.getName(item.get_meta("penState", "pen")))
 		"stamp":
@@ -358,6 +361,53 @@ func playFeedback(atPosition: Vector2, sound: AudioStream, message: String, caut
 func _process(_delta: float) -> void :
 	if label.visible:
 		label.position = label.get_viewport().get_mouse_position() + Vector2(6, -3)
+	_updateWrenchAction()
+
+# Using the wrench in hand ("Anchoring" tool quality): the structure under it is
+# unbolted or bolted after AnchorableComponent's 1 s delay, with the ratchet
+# sound at the start. The do-after is cancelled when the wrench is let go or
+# leaves the structure.
+var _wrenchAction: Dictionary = {}
+
+func isHoldingWrench() -> bool:
+	return dragging and heldItem != null and heldItem.get_meta("type", "") == "wrench"
+
+func _anchorableUnder(point: Vector2):
+	for anchorable in get_tree().get_nodes_in_group("anchorables"):
+		if anchorable.rect().has_point(point):
+			return anchorable
+	return null
+
+func useWrench(wrench: RigidBody2D) -> void :
+	if not _wrenchAction.is_empty():
+		return
+	var anchorable = _anchorableUnder(wrench.global_position)
+	if anchorable == null:
+		return
+	_playSoundAt(wrench.global_position, ratchetSound)
+	_wrenchAction = {"wrench": wrench, "anchorable": anchorable, "end": Time.get_ticks_msec() + int(anchorable.delaySeconds * 1000.0)}
+
+func _updateWrenchAction() -> void :
+	if _wrenchAction.is_empty():
+		return
+	var wrench = _wrenchAction.wrench
+	var anchorable = _wrenchAction.anchorable
+	if not is_instance_valid(wrench) or not isHoldingWrench() or heldItem != wrench \
+			or not anchorable.rect().has_point(wrench.global_position):
+		_wrenchAction = {}
+		return
+	if Time.get_ticks_msec() < _wrenchAction.end:
+		return
+	_wrenchAction = {}
+	anchorable.toggle()
+	playFeedback(anchorable.structure.global_position, null, tr("ui_anchored") if anchorable.anchored else tr("ui_unanchored"))
+
+# Whether a left click would grab an unanchored structure.
+func structureGrabbable() -> bool:
+	for anchorable in get_tree().get_nodes_in_group("anchorables"):
+		if anchorable.canGrab():
+			return true
+	return false
 
 func getItemStampOverlay(item: RigidBody2D) -> Node2D:
 	var collisionShape = item.get_node("CollisionShape2D")
@@ -392,6 +442,8 @@ func _physics_process(delta: float) -> void :
 					clickPen(heldItem)
 			elif heldType == "tonerCartridge":
 				applyTonerCartridgeToPrinter(heldItem)
+			elif heldType == "wrench":
+				useWrench(heldItem)
 
 		# The pen's "Sign" verb.
 		if Input.is_action_just_pressed("signDocument") and heldItem.get_meta("type", "") == "pen":
@@ -490,7 +542,7 @@ func _input(event: InputEvent) -> void :
 	# LMB on empty space (no item under the cursor, nothing being dragged)
 	# pans the camera, mirroring the existing middle-mouse pan - clicking an
 	# item always takes priority over panning.
-	if not hovering and not dragging and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if not hovering and not dragging and not structureGrabbable() and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			worldCamera.startPan(event.position)
 		else:
