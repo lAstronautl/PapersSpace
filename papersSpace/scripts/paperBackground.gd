@@ -55,7 +55,10 @@ func applyVisuals(visuals: Dictionary) -> void :
 	var path: String = visuals.get("backgroundImagePath", "")
 
 	if path == "":
-		_applyBase(defaultTexture, defaultMargin, defaultModulate, false)
+		# PaperDefaultBorder's cream style tint is multiplied by the prototype's
+		# own backgroundModulate (colored papers), as Robust multiplies a
+		# StyleBoxTexture's Modulate with its control's ModulateSelf.
+		_applyBase(defaultTexture, defaultMargin, defaultModulate * visuals.get("backgroundModulate", Color.WHITE), false)
 		return
 
 	var margin: Vector4 = visuals.get("backgroundPatchMargin", Vector4.ZERO)

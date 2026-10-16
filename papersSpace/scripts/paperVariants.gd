@@ -33,8 +33,11 @@ extends Node
 #   AccessLogs, ArtifactAnalyzer all do this in SS14).
 # "content" is fixed/generated text stamped on at creation time.
 const variants = {
+	# Paper has an empty PaperVisuals in SS14, so its window uses the
+	# "PaperDefaultBorder" style (default border tinted light cream) - see
+	# paperBackground.gd. Same for the variants below that only add content.
 	"default": {
-		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)},
+		"visuals": {},
 	},
 	"office": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "contentImagePath": "res://png/item/paper/backgrounds/paper_content_lined.png", "contentMargin": Vector4(16, 16, 16, 16)},
@@ -53,12 +56,12 @@ const variants = {
 	# so the UI reading window falls back to PaperDefaultBorder
 	# (paper_background_default, 16px patch margin) tinted by backgroundModulate,
 	# same as every other undecorated colored paper variant here.
-	"colored_yellow": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("fff4b5")}, "color": "yellow"},
-	"colored_green": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("bae6ba")}, "color": "green"},
-	"colored_red": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("f4b5b5")}, "color": "red"},
-	"colored_orange": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("f9c7a1")}, "color": "orange"},
-	"colored_blue": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("b7dcfa")}, "color": "blue"},
-	"colored_purple": {"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16), "backgroundModulate": Color("dfb7fa")}, "color": "purple"},
+	"colored_yellow": {"visuals": {"backgroundModulate": Color("fff4b5")}, "color": "yellow"},
+	"colored_green": {"visuals": {"backgroundModulate": Color("bae6ba")}, "color": "green"},
+	"colored_red": {"visuals": {"backgroundModulate": Color("f4b5b5")}, "color": "red"},
+	"colored_orange": {"visuals": {"backgroundModulate": Color("f9c7a1")}, "color": "orange"},
+	"colored_blue": {"visuals": {"backgroundModulate": Color("b7dcfa")}, "color": "blue"},
+	"colored_purple": {"visuals": {"backgroundModulate": Color("dfb7fa")}, "color": "purple"},
 	"forensic_scanner": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(6, 0, 6, 0), "headerImagePath": "res://png/item/paper/headers/header_forensic_scanner.png", "headerMargin": Vector4(0, 4, 0, 0), "contentMargin": Vector4(12, 0, 6, 0), "maxWritableArea": Vector2(368, 256)},
 		"worldTexture": "res://png/item/paper/paper_receipt_horizontal_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt_horizontal.png",
@@ -117,11 +120,11 @@ const variants = {
 		"content": "generateCnc",
 	},
 	"nuke_code": {
-		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)},
+		"visuals": {},
 		"content": "generateNukeCode",
 	},
 	"traitor_codes": {
-		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_default.png", "backgroundPatchMargin": Vector4(16, 16, 16, 16)},
+		"visuals": {},
 		"content": "generateTraitorCodes",
 	},
 	"acquisition_service": {
