@@ -14,6 +14,7 @@ const collideInsertSpeed = 80.0
 @export var insertSound: AudioStream
 @export var flushSound: AudioStream
 
+@onready var anchorable: Node = $Anchorable
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var readyOverlay: Sprite2D = $ReadyOverlay
 @onready var itemInteractionControler: Node2D = $"../itemInteractionControler"
@@ -58,7 +59,9 @@ func _sliceFrames(path: String, columns: int, rows: int) -> Array:
 	return frames
 
 func _process(delta: float) -> void :
-	readyOverlay.visible = not busy
+	readyOverlay.visible = not busy and anchorable.isPowered()
+	if _openEditor and not anchorable.isPowered():
+		_openEditor.closed.emit()
 
 	if not _flushPlaying:
 		return
@@ -80,7 +83,7 @@ func _process(delta: float) -> void :
 		sprite.texture = _flushFrames[_flushFrame]
 
 func _input(event: InputEvent) -> void :
-	if not hovering or not event.is_pressed() or not event.is_action("orientDocument"):
+	if not hovering or not event.is_pressed() or not event.is_action("orientDocument") or not anchorable.isPowered():
 		return
 
 	if itemInteractionControler.isHoldingWrench():
@@ -95,7 +98,7 @@ func _input(event: InputEvent) -> void :
 # contact, not just deliberate drag+insert - an item knocked into the unit
 # hard enough gets sucked in automatically.
 func _on_body_entered(body: Node) -> void :
-	if not body is RigidBody2D:
+	if not body is RigidBody2D or not anchorable.isPowered():
 		return
 	# Don't vacuum up whatever the player is currently dragging past the
 	# unit - only items thrown/knocked in on their own (physics-driven

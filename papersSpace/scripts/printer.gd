@@ -15,6 +15,7 @@ const tonerPerPage = 1
 @onready var lightOverlay: Sprite2D = $LightOverlay
 @onready var insertOverlay: Sprite2D = $InsertOverlay
 @onready var itemInteractionControler: Node2D = $"../itemInteractionControler"
+@onready var anchorable: Node = $Anchorable
 @onready var itemLoader: Node2D = $"../itemLoader"
 @onready var itemsParent: Node2D = $"../items"
 @onready var editorsLayer: Control = $"../../../editorsLayer"
@@ -87,6 +88,9 @@ func _playBuildAnim(onDone: Callable) -> void :
 	_buildDone = onDone
 
 func _process(delta: float) -> void :
+	lightOverlay.visible = anchorable.isPowered()
+	if _openEditor and not anchorable.isPowered():
+		_openEditor.closed.emit()
 	_animTimer += delta
 	if _animTimer < _frameDelay:
 		return
@@ -129,7 +133,7 @@ func refillToner() -> void :
 	toner = maxToner
 
 func _input(event: InputEvent) -> void :
-	if not hovering or not event.is_pressed() or not event.is_action("orientDocument"):
+	if not hovering or not event.is_pressed() or not event.is_action("orientDocument") or not anchorable.isPowered():
 		return
 
 	if itemInteractionControler.isHoldingWrench():

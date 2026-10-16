@@ -485,6 +485,42 @@ func _updatePlaceAction() -> void :
 	else:
 		stack.set_meta("count", left)
 
+# MeleeWeapon damage of the items that can hurt something: the advanced pens
+# (Piercing 15, bladeslice) and the wrench (Blunt 4.5, MetalThud, 1.5 swings a
+# second). The Inflatable modifier set takes 5 off every blunt hit, so a wrench
+# only bounces off a barricade; a piercing pen pops it at once.
+const meleeBladeSound = preload("res://sfx/bladeslice.ogg")
+const meleeThudSound = preload("res://sfx/metal_thud1.ogg")
+
+func _meleeProfile(item: RigidBody2D, itemType: String) -> Dictionary:
+	if itemType == "pen" and PenInfo.penData.get(item.get_meta("penState", "pen"), {}).get("ignore", "none") != "none":
+		return {"type": "piercing", "amount": 15.0, "delay": 1.0, "sound": meleeBladeSound}
+	if itemType == "wrench":
+		return {"type": "blunt", "amount": 4.5, "delay": 1.0 / 1.5, "sound": meleeThudSound}
+	return {}
+
+func _inflatableAtCursor():
+	for inflatable in get_tree().get_nodes_in_group("inflatables"):
+		if inflatable.rect().has_point(mousePin.global_position):
+			return inflatable
+	return null
+
+# Using a weapon-like item on a barricade or inflatable door hits it. Returns
+# whether the use was taken as a hit (a wrench over a machine stays a wrench use).
+func _tryMelee(item: RigidBody2D, itemType: String) -> bool:
+	var profile = _meleeProfile(item, itemType)
+	var target = _inflatableAtCursor()
+	if profile.is_empty() or target == null:
+		return false
+	if itemType == "wrench" and _anchorableUnder(item) != null:
+		return false
+	if _isDelayed(item, "melee"):
+		return true
+	_setDelay(item, "melee", profile.delay)
+	playSoundAt(target.global_position, profile.sound)
+	target.takeDamage(profile.type, profile.amount)
+	return true
+
 # Whether a left click would grab an unanchored structure.
 func structureGrabbable() -> bool:
 	for anchorable in get_tree().get_nodes_in_group("anchorables"):
@@ -515,7 +551,9 @@ func _physics_process(delta: float) -> void :
 
 		if Input.is_action_just_pressed("orientDocument"):
 			var heldType = heldItem.get_meta("type", "")
-			if heldType == "labeler":
+			if _tryMelee(heldItem, heldType):
+				pass
+			elif heldType == "labeler":
 				applyLabelerToOverlaps(heldItem)
 			elif heldType == "stamp":
 				applyStampToOverlaps(heldItem)

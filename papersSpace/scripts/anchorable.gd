@@ -33,6 +33,10 @@ func rect() -> Rect2:
 func canGrab() -> bool:
 	return _grabbing or (_hovering and not anchored)
 
+# An unbolted machine is cut off from its power connection: it does not work.
+func isPowered() -> bool:
+	return anchored
+
 func toggle() -> void :
 	anchored = not anchored
 	_grabbing = false

@@ -30,6 +30,7 @@ const ejectDelays = [0.1, 0.1, 0.8, 0.1, 0.1]
 @export var vendSound: AudioStream
 @export var denySound: AudioStream
 
+@onready var anchorable: Node = $Anchorable
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var screen: Sprite2D = $Screen
 @onready var itemInteractionControler: Node2D = $"../itemInteractionControler"
@@ -109,10 +110,18 @@ func _process(delta: float) -> void :
 	_stateTime += delta
 	_showFrame()
 
-	_adTimer -= delta
-	if _adTimer <= 0.0:
-		_adTimer = randf_range(minAdSeconds, maxAdSeconds)
-		_say(tr("ui_vend_ad_%d" % (randi() % adCount + 1)))
+	# Unbolted from the floor the machine loses power: dark screen, no light, no menu.
+	var powered = anchorable.isPowered()
+	screen.visible = powered
+	$PointLight2D.enabled = powered
+	if _openEditor and not powered:
+		_openEditor.closed.emit()
+
+	if powered:
+		_adTimer -= delta
+		if _adTimer <= 0.0:
+			_adTimer = randf_range(minAdSeconds, maxAdSeconds)
+			_say(tr("ui_vend_ad_%d" % (randi() % adCount + 1)))
 
 	if ejecting and _stateTime >= ejectDelay:
 		_finishEject()
@@ -121,7 +130,7 @@ func _process(delta: float) -> void :
 		_setState(State.NORMAL)
 
 func _input(event: InputEvent) -> void :
-	if not hovering or not event.is_pressed() or not event.is_action("orientDocument"):
+	if not hovering or not event.is_pressed() or not event.is_action("orientDocument") or not anchorable.isPowered():
 		return
 	if itemInteractionControler.dragging:
 		return
@@ -147,7 +156,7 @@ func _openVendingUI() -> void :
 
 # SharedVendingMachineSystem.TryEjectVendorItem
 func tryEject(entry: Dictionary) -> bool:
-	if ejecting:
+	if ejecting or not anchorable.isPowered():
 		return false
 	if not inventory.has(entry):
 		_popup(tr("ui_vend_invalid_item"))
