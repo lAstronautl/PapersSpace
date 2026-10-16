@@ -2,7 +2,7 @@ keys,en,ru
 ui_save,save,сохр
 ui_close,close,закр
 ui_name_placeholder,name,имя
-ui_blank_page_placeholder,<This page was left intentionally blank>,<Эта страница специально оставлена пустой>
+ui_blank_page_placeholder,This page intentionally left blank,Данная страница оставлена пустой специально
 ui_stamp,stamp,штмп
 ui_label_applied,Label applied successfully,Этикетка успешно наклеена
 ui_stamp_applied,Stamp applied successfully,Штамп успешно поставлен

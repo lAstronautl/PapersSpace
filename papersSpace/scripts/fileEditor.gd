@@ -186,7 +186,8 @@ func refreshWritingLock() -> void :
 		# PaperWrittenText color (#111111, set as previewLabel's default_color
 		# in the scene).
 		if textEditor.text.is_empty():
-			previewLabel.text = tr("ui_blank_page_placeholder")
+			# BlankPaperIndicator is HorizontalAlignment="Center" in PaperWindow.xaml.
+			previewLabel.text = "[center]%s[/center]" % tr("ui_blank_page_placeholder")
 			previewLabel.add_theme_color_override("default_color", Color(0.098039, 0.098039, 0.098039, 1))
 		else:
 			previewLabel.text = _toSafeBBCode(textEditor.text)
