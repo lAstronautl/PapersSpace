@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://scripts/pen.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pen1"]
-size = Vector2(20, 20)
+size = Vector2(12, 12)
 
 [node name="pen" type="RigidBody2D"]
 y_sort_enabled = true

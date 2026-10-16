@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://scripts/stamp.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_stmp1"]
-size = Vector2(24, 24)
+size = Vector2(12, 12)
 
 [node name="stamp" type="RigidBody2D"]
 y_sort_enabled = true
