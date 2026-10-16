@@ -23,13 +23,13 @@ extends Node
 # Vector4(left, top, right, bottom) - so .x=left, .y=top, .z=right, .w=bottom
 # throughout this file and in paperBackground.gd/fileEditor.gd. Symmetric
 # values (top==bottom) are unaffected either way; only asymmetric ones
-# (e.g. headerMargin on cargo_invoice/nanotask/artifact_analyzer,
+# (e.g. headerMargin on cargo_invoice/artifact_analyzer,
 # contentMargin on captains_thoughts/artifact_analyzer) actually needed
 # reordering versus the raw YAML text.
 #
 # Non-PaperVisuals fields kept alongside for this port's own bookkeeping:
 # "worldTexture"/"worldTextureEmpty" -> overrides the world Sprite with
-#   unique RSI-equivalent art (AcquisitionSlips, NanoTask, ForensicReportPaper/
+#   unique RSI-equivalent art (AcquisitionSlips, ForensicReportPaper/
 #   AccessLogs, ArtifactAnalyzer all do this in SS14).
 # "content" is fixed/generated text stamped on at creation time.
 const variants = {
@@ -70,13 +70,9 @@ const variants = {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(6, 0, 6, 0), "contentMargin": Vector4(12, 0, 6, 0), "maxWritableArea": Vector2(368, 256)},
 		"worldTexture": "res://png/item/paper/paper_receipt_horizontal_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt_horizontal.png",
 	},
-	"nanotask": {
-		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(0, 6, 0, 6), "headerImagePath": "res://png/item/paper/headers/header_nanotask.png", "headerMargin": Vector4(0, 6, 0, 0), "contentMargin": Vector4(12, 0, 12, 0), "maxWritableArea": Vector2(256, 0)},
-		"worldTexture": "res://png/item/paper/paper_receipt_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt.png",
-	},
 	# Mirrors StarHorizon's DiagnosisReportPaper (Entities/Structures/Machines/
-	# Medical/disease_diagnoser.yml) - same perforated receipt look/margins as
-	# nanotask, just the virus header and a narrower writable width (128 vs 256).
+	# Medical/disease_diagnoser.yml) - perforated receipt with the virus header and
+	# a 128 wide writable area.
 	"disease_diagnosis": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(0, 6, 0, 6), "headerImagePath": "res://png/item/paper/headers/header_virus.png", "headerMargin": Vector4(0, 6, 0, 0), "contentMargin": Vector4(12, 0, 12, 0), "maxWritableArea": Vector2(128, 0)},
 		"worldTexture": "res://png/item/paper/paper_receipt_words.png", "worldTextureEmpty": "res://png/item/paper/paper_receipt.png",
@@ -133,7 +129,7 @@ const variants = {
 		"editingDisabled": true,
 	},
 	# Mirrors StarHorizon's MedTek patient record (_NF forms_medical.yml
-	# PaperWrittenMedicalMedtekPatientRecord): NanoTask-style perforated receipt
+	# PaperWrittenMedicalMedtekPatientRecord): perforated receipt
 	# with the MedTek header and a 256-wide writable area.
 	"medtek_patient_record": {
 		"visuals": {"backgroundImagePath": "res://png/item/paper/backgrounds/paper_background_perforated.png", "backgroundImageTile": true, "backgroundPatchMargin": Vector4(0, 6, 0, 6), "headerImagePath": "res://png/item/paper/headers/header_medtek_report.png", "headerMargin": Vector4(0, 6, 0, 0), "contentMargin": Vector4(12, 0, 12, 0), "maxWritableArea": Vector2(256, 0)},
@@ -385,7 +381,7 @@ const variantCategories = {
 	"colored_orange": "basic", "colored_blue": "basic", "colored_purple": "basic", "captains_thoughts": "basic",
 	"cargo_invoice": "basic", "cargo_bounty_manifest": "basic", "cnc_sheet": "basic", "nuke_code": "basic",
 	"traitor_codes": "basic", "napkin": "basic", "envelope": "basic", "book": "books",
-	"forensic_scanner": "receipts", "access_logs": "receipts", "nanotask": "receipts", "disease_diagnosis": "receipts",
+	"forensic_scanner": "receipts", "access_logs": "receipts", "disease_diagnosis": "receipts",
 	"artifact_analyzer": "receipts", "medtek_patient_record": "receipts",
 	"acquisition_medical": "receipts", "acquisition_science": "receipts", "acquisition_security": "receipts",
 	"acquisition_cargo": "receipts", "acquisition_engineering": "receipts", "acquisition_service": "receipts",
