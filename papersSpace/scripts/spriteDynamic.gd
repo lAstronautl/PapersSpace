@@ -42,7 +42,14 @@ func setActiveTexture(state: bool):
 		shadowSprite.texture = texture
 
 func setPaperStyle(style: String) -> void :
-	modulate = paperStyles.get(style, paperStyles["default"])
+	modulate = styleColor(style)
+
+# A paper style is either one of the named tints above or a raw "#rrggbb" colour
+# (the world Sprite colour StarHorizon's paper prototypes set per layer).
+static func styleColor(style: String) -> Color:
+	if style.begins_with("#"):
+		return Color.html(style)
+	return paperStyles.get(style, paperStyles["default"])
 
 # Sets unique world-sprite art for variants that don't just tint the default
 # paper texture (e.g. AcquisitionSlips use their own "acquisition_form" RSI

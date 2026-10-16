@@ -18,6 +18,7 @@ const dragMarginSize = 16.0
 @onready var linedBackground: TextureRect = $linedBackground
 
 const StampInfo = preload("res://scripts/stampInfo.gd")
+const PaperMarkup = preload("res://scripts/paperMarkup.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
 const SpriteDynamic = preload("res://scripts/spriteDynamic.gd")
 const stampBorderTexture = preload("res://png/item/paper/stampMarks/stamp_border.png")
@@ -34,7 +35,30 @@ var currentDrag = DragMode.NONE
 var dragOffset = Vector2.ZERO
 var dragStartRect = Rect2()
 
+# The preview label renders [bold]/[italic]/[bolditalic] from these. Only the
+# Regular and Bold Noto Sans files ship with the game, so italics are the
+# regular/bold faces skewed (like SS14's NotoSans-Italic stand-in).
+const regularFont = preload("res://fonts/NotoSans/NotoSans-Regular.ttf")
+const italicSkew = 0.2
+const previewFontSize = 12
+
+func _skewed(font: Font) -> FontVariation:
+	var variation = FontVariation.new()
+	variation.base_font = font
+	variation.variation_transform = Transform2D(Vector2(1, 0), Vector2(italicSkew, 1), Vector2.ZERO)
+	return variation
+
+func _setupPreviewFonts() -> void :
+	previewLabel.add_theme_font_override("normal_font", regularFont)
+	previewLabel.add_theme_font_override("bold_font", stampFont)
+	previewLabel.add_theme_font_override("italics_font", _skewed(regularFont))
+	previewLabel.add_theme_font_override("bold_italics_font", _skewed(stampFont))
+	previewLabel.add_theme_font_override("mono_font", regularFont)
+	for sizeName in ["normal_font_size", "bold_font_size", "italics_font_size", "bold_italics_font_size", "mono_font_size"]:
+		previewLabel.add_theme_font_size_override(sizeName, previewFontSize)
+
 func _ready():
+	_setupPreviewFonts()
 	textEditor.text_changed.connect(_text_changed)
 	saveButton.pressed.connect(_save_button_pressed)
 	closeButton.pressed.connect(_close_button_pressed)
@@ -52,8 +76,6 @@ func _refreshLocaleStrings() -> void :
 	# read-only (no pen used yet, stamped, or permanently uneditable).
 	textEditor.placeholder_text = tr("ui_blank_page_placeholder")
 	refreshWritingLock()
-
-const allowedTags = ["b", "/b", "i", "/i", "u", "/u", "color=red", "color=blue", "color=green", "/color"]
 
 func open(item: RigidBody2D) -> void :
 	textEditor.text = item.get_meta("content")
@@ -99,11 +121,15 @@ func open(item: RigidBody2D) -> void :
 	# tint (see spriteDynamic.gd's paperStyles) multiplies on top of whatever
 	# PaperVisuals.backgroundModulate/contentImageModulate already set, via
 	# Godot's separate `modulate` (as opposed to `self_modulate`) property.
-	if item.get_meta("type") == "txt":
-		var paperStyle: String = item.get_meta("paperStyle", "default")
-		var styleColor = SpriteDynamic.paperStyles.get(paperStyle, SpriteDynamic.paperStyles["default"])
-		paperBackground.modulate = styleColor
-		linedBackground.modulate = styleColor
+	# Variants that carry their own "color" (colored papers, cargo invoices...)
+	# already express that tint through PaperVisuals, so applying the style on
+	# top would tint the window twice.
+	var paperVariant: String = item.get_meta("paperVariant", "default")
+	var styleColor = Color.WHITE
+	if item.get_meta("type") == "txt" and not PaperVariants.getConfig(paperVariant).has("color"):
+		styleColor = SpriteDynamic.styleColor(item.get_meta("paperStyle", "default"))
+	paperBackground.modulate = styleColor
+	linedBackground.modulate = styleColor
 
 	# Mirrors SS14's PaperVisuals.maxWritableArea: constrains the reading
 	# window's content area width/height independently (0 on an axis means
@@ -164,7 +190,7 @@ func refreshWritingLock() -> void :
 			previewLabel.add_theme_color_override("default_color", Color(0.098039, 0.098039, 0.098039, 1))
 		else:
 			previewLabel.text = _toSafeBBCode(textEditor.text)
-			previewLabel.remove_theme_color_override("default_color")
+			previewLabel.add_theme_color_override("default_color", Color("111111"))
 
 	# Mirrors SS14: a read-only paper is just a prop - you can grab and drag
 	# the window from anywhere, including on top of its text, not only its
@@ -268,19 +294,7 @@ func _addStampWidget(stampState: String, orientation: float, centerPos: Vector2)
 	widget.position = centerPos - widgetSize / 2
 
 func _toSafeBBCode(rawText: String) -> String:
-	# Escaping "[" -> "[lb]" then "]" -> "[rb]" sequentially is unsafe: "[lb]"
-	# and "[rb]" themselves contain "[" and "]", so the second replace also
-	# mangles brackets the first replace just inserted (e.g. "[b]" ends up as
-	# "[lb[rb]b[rb]" instead of "[lb]b[rb]"). Route through bracket-free
-	# placeholder codepoints first, then restore literal escapes and allowed
-	# tags, so neither replace step can corrupt what the other just wrote.
-	var leftPlaceholder = String.chr(0xE000)
-	var rightPlaceholder = String.chr(0xE001)
-	var escaped = rawText.replace("[", leftPlaceholder).replace("]", rightPlaceholder)
-	for tag in allowedTags:
-		escaped = escaped.replace("%s%s%s" % [leftPlaceholder, tag, rightPlaceholder], "[%s]" % tag)
-	escaped = escaped.replace(leftPlaceholder, "[lb]").replace(rightPlaceholder, "[rb]")
-	return escaped
+	return PaperMarkup.toBBCode(rawText)
 
 func save() -> void :
 	# Mirrors SS14's OnInputTextMessage: text longer than ContentSize is
