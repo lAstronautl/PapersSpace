@@ -20,12 +20,18 @@ const stampScale = 1.0
 var _allStamps: Array = []
 var _visibleStamp: Sprite2D
 
-func addStamp(stampState: String, stampRotation: float, stampPosition: Vector2) -> void :
-	_allStamps.append({
+# `extra` carries per-entry data that is not part of the stamp kind, e.g. the
+# signer name and colour of a pen signature.
+func addStamp(stampState: String, stampRotation: float, stampPosition: Vector2, extra: Dictionary = {}) -> void :
+	var entry = {
 		"stampState": stampState,
 		"rotation": stampRotation,
 		"position": {"x": stampPosition.x, "y": stampPosition.y},
-	})
+	}
+	for key in ["signer", "color"]:
+		if extra.has(key):
+			entry[key] = extra[key]
+	_allStamps.append(entry)
 
 	if _visibleStamp:
 		return
@@ -64,4 +70,4 @@ func loadStamps(data: Array) -> void :
 	for entry in data:
 		if not entry.has("stampState"):
 			continue
-		addStamp(entry.stampState, entry.rotation, Vector2(entry.position.x, entry.position.y))
+		addStamp(entry.stampState, entry.rotation, Vector2(entry.position.x, entry.position.y), entry)

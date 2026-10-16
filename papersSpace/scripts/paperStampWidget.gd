@@ -19,6 +19,8 @@ const textScalingStep = 0.1                  # StampLabel "shimmerReduction"
 
 var stampText: String = ""
 var stampColor: Color = Color.WHITE
+# StampType.Signature: no border panel (PanelOverride = null), just the name.
+var isSignature: bool = false
 var textScaling: float = 1.0
 var _font = RobustFont.noto_bold(20)
 var _border: Control
@@ -39,9 +41,11 @@ func _init() -> void:
 	_border.show_behind_parent = true   # the panel is drawn before the label
 	add_child(_border)
 
-func setup(text: String, color: Color) -> void:
+func setup(text: String, color: Color, signature: bool = false) -> void:
 	stampText = text
 	stampColor = color
+	isSignature = signature
+	_border.visible = not signature
 	_material.set_shader_parameter("tint", color)
 	queue_redraw()
 
@@ -54,11 +58,15 @@ func text_size() -> Vector2:
 			width += advance
 	return Vector2(width, _font.height() if stampText.length() > 0 else 0)
 
+# Content inset of the panel style: the border's patch margin, none for signatures.
+func _inset() -> float:
+	return 0.0 if isSignature else patchMargin
+
 # The panel (without the outer Margin 6).
 func panel_size() -> Vector2:
 	var text = text_size()
-	return Vector2(text.x + labelMargin.x + labelMargin.z + patchMargin * 2.0,
-		text.y + labelMargin.y + labelMargin.w + patchMargin * 2.0)
+	return Vector2(text.x + labelMargin.x + labelMargin.z + _inset() * 2.0,
+		text.y + labelMargin.y + labelMargin.w + _inset() * 2.0)
 
 # Control.DesiredSize: the panel plus the widget's Margin.
 func desired_size() -> Vector2:
@@ -67,8 +75,8 @@ func desired_size() -> Vector2:
 # StampLabel.MeasureOverride: `available` is the space the stamp collection gives
 # the widget; the label gets what is left after both margins and the border.
 func measure(available: Vector2) -> void:
-	var label_available = available - Vector2(outerMargin * 2.0 + patchMargin * 2.0 + labelMargin.x + labelMargin.z,
-		outerMargin * 2.0 + patchMargin * 2.0 + labelMargin.y + labelMargin.w)
+	var label_available = available - Vector2(outerMargin * 2.0 + _inset() * 2.0 + labelMargin.x + labelMargin.z,
+		outerMargin * 2.0 + _inset() * 2.0 + labelMargin.y + labelMargin.w)
 	var desired = text_size()
 	var scale = Vector2(1.0, 1.0)
 	if desired.x > 0:
@@ -91,7 +99,7 @@ func place(panel_position: Vector2, orientation: float) -> void:
 func _draw() -> void:
 	if stampText == "":
 		return
-	var origin = Vector2(patchMargin + labelMargin.x, patchMargin + labelMargin.y)
+	var origin = Vector2(_inset() + labelMargin.x, _inset() + labelMargin.y)
 	draw_set_transform(origin, 0.0, Vector2(textScaling, textScaling))
 	var baseline = Vector2(0, _font.ascent())
 	for index in stampText.length():

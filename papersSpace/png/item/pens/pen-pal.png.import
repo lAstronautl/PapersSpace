@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g4lhnyiyf5jt"
-path="res://.godot/imported/cyberpen.png-4647da5e2800f5f3cec6c20f158a2b50.ctex"
+uid="uid://cle8nokkvfwnh"
+path="res://.godot/imported/pen-pal.png-cf6a3ca14cf8f93cf0b50056b6a8180c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://png/item/pens/cyberpen.png"
-dest_files=["res://.godot/imported/cyberpen.png-4647da5e2800f5f3cec6c20f158a2b50.ctex"]
+source_file="res://png/item/pens/pen-pal.png"
+dest_files=["res://.godot/imported/pen-pal.png-cf6a3ca14cf8f93cf0b50056b6a8180c.ctex"]
 
 [params]
 

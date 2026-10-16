@@ -1,12 +1,15 @@
 extends Node2D
 
 const StampInfo = preload("res://scripts/stampInfo.gd")
+const PenInfo = preload("res://scripts/penInfo.gd")
+const SignerName = preload("res://scripts/signerName.gd")
+const penClickSound = preload("res://sfx/pen_click.ogg")
+const PaperSounds = preload("res://scripts/paperSounds.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
 
 @export var paperEditorScene: PackedScene
 @export var labelerEditorScene: PackedScene
 @export var floatingNoticeScene: PackedScene
-@export var stampAppliedSound: AudioStream
 @export var tonerInsertSound: AudioStream
 
 @onready var mousePin: PinJoint2D = $"../mousePin"
@@ -156,6 +159,59 @@ func applyLabelerToOverlaps(labelerItem: RigidBody2D) -> void :
 			if labelerItem.applyLabelTo(body):
 				_playFeedback(labelerItem.global_position, null, tr("ui_label_applied"))
 
+# --- stamps, pens (PaperSystem.OnInteractUsing) ---------------------------------------
+
+# UseDelay: a stamp or pen cannot stamp/sign again for a second (the "stamp" delay),
+# and a pen cannot click again for 1.5 s.
+var _delayedUntil: Dictionary = {}
+
+func _isDelayed(item: RigidBody2D, delayId: String) -> bool:
+	return Time.get_ticks_msec() < _delayedUntil.get([item.get_instance_id(), delayId], 0)
+
+func _setDelay(item: RigidBody2D, delayId: String, seconds: float) -> void :
+	_delayedUntil[[item.get_instance_id(), delayId]] = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+# The name an item shows when hovered, in the current language.
+func getItemDisplayName(item: Node) -> String:
+	match item.get_meta("type", ""):
+		"pen":
+			return tr(PenInfo.getName(item.get_meta("penState", "pen")))
+		"stamp":
+			var key = "stamp_item_" + StampInfo.resolveKey(item.get_meta("stampState", "cap")).replace("-", "_")
+			var translated = tr(key)
+			return item.name if translated == key else translated
+	return item.name
+
+func _playSoundAt(atPosition: Vector2, sound: AudioStream, volumeDb: float = 0.0) -> void :
+	if not sound:
+		return
+	var audioPlayer = AudioStreamPlayer2D.new()
+	itemsParent.add_child(audioPlayer)
+	audioPlayer.global_position = atPosition
+	audioPlayer.stream = sound
+	audioPlayer.volume_db = volumeDb
+	audioPlayer.play()
+	audioPlayer.finished.connect(audioPlayer.queue_free)
+
+# PaperSystem.CanStamp: at most stampLimit stamps; a stamp can't be applied twice,
+# unless it is a reapply stamp (APPROVED/DENIED), which may be applied up to
+# reapplyLimit times.
+func _canStamp(stamps: Array, stampState: String) -> bool:
+	if stamps.size() >= StampInfo.stampLimit:
+		return false
+	var sameCount = stamps.filter(func(entry): return StampInfo.resolveKey(entry.get("stampState", "")) == stampState).size()
+	if StampInfo.canReapply(stampState):
+		return sameCount < StampInfo.reapplyLimit
+	return sameCount == 0
+
+func _addStampToPaper(paper: RigidBody2D, entry: Dictionary) -> void :
+	var overlay = paper.get_node("CollisionShape2D/StampOverlay")
+	overlay.addStamp(entry.stampState, 0.0, Vector2.ZERO, entry)
+	paper.set_meta("stamps", overlay.serializeStamps())
+	# Mode is not changed by stamping: whoever has the paper open may still write.
+	if openEditors.has(paper):
+		openEditors[paper].refreshStamps()
+
 func applyStampToOverlaps(stampItem: RigidBody2D) -> void :
 	for body in itemsParent.get_children():
 		if body == stampItem:
@@ -163,62 +219,77 @@ func applyStampToOverlaps(stampItem: RigidBody2D) -> void :
 		if body.get_meta("type", "") != "txt":
 			continue
 		if body.global_position.distance_to(stampItem.global_position) <= stampApplyRadius:
-			# Mirrors Frontier's PaperSystem.CanStamp: at most stampLimit stamps per
-			# paper; a stamp can't be applied twice, unless it is a reapply stamp
-			# (APPROVED/DENIED), which may be applied up to reapplyLimit times.
+			if _isDelayed(stampItem, "stamp"):
+				return
 			var stamps: Array = body.get_meta("stamps", [])
-			if stamps.size() >= StampInfo.stampLimit:
-				continue
-			var sameCount = stamps.filter(func(entry): return StampInfo.resolveKey(entry.get("stampState", "")) == stampItem.stampState).size()
-			if StampInfo.canReapply(stampItem.stampState):
-				if sameCount >= StampInfo.reapplyLimit:
-					continue
-			elif sameCount > 0:
-				continue
+			# PaperSystem.TryStamp reports success even when CanStamp refused to add
+			# the stamp, so the sound, message and delay always follow.
+			if _canStamp(stamps, stampItem.stampState):
+				_addStampToPaper(body, {"stampState": stampItem.stampState})
+			_playSoundAt(stampItem.global_position, StampInfo.getStampSound(stampItem.stampState), -2.0)
+			_playFeedback(stampItem.global_position, null, tr("ui_stamp_applied") % [body.name, getItemDisplayName(stampItem)])
+			_setDelay(stampItem, "stamp", PenInfo.stampDelaySeconds)
 
-			var overlay = body.get_node("CollisionShape2D/StampOverlay")
-			overlay.addRandomizedStamp(stampItem.stampState)
-			body.set_meta("stamps", overlay.serializeStamps())
-			body.set_meta("writingUnlocked", false)
-			if openEditors.has(body):
-				openEditors[body].refreshStamps()
-				openEditors[body].refreshWritingLock()
-			_playFeedback(stampItem.global_position, stampAppliedSound, tr("ui_stamp_applied"))
+# Pen signature: a stamp of Type Signature, named after the signer, in the pen's colour.
+func trySign(paper: RigidBody2D, penItem: RigidBody2D) -> bool:
+	if _isDelayed(penItem, "stamp"):
+		return false
+	var signer = SignerName.get_signer_name()
+	var color = PenInfo.getSignatureColor(penItem.penState).to_html(true)
+	var stamps: Array = paper.get_meta("stamps", [])
+	var duplicate = stamps.any(func(entry): return entry.get("signer", null) == signer and entry.get("color", "") == color)
+	if stamps.size() < StampInfo.stampLimit and not duplicate:
+		_addStampToPaper(paper, {"stampState": "signature", "signer": signer, "color": color})
+	PaperSounds.play(itemsParent, paper.global_position)
+	_playFeedback(penItem.global_position, null, tr("ui_signed") % paper.name)
+	_setDelay(penItem, "stamp", PenInfo.stampDelaySeconds)
+	return true
 
-func applyPenToOverlaps(penItem: RigidBody2D) -> void :
+# PaperSystem.OnInteractUsing for a pen. Returns how many papers it acted on.
+func applyPenToOverlaps(penItem: RigidBody2D, signOnly: bool = false) -> int:
+	var handled = 0
 	for body in itemsParent.get_children():
 		if body == penItem:
 			continue
 		if body.get_meta("type", "") != "txt":
 			continue
-		if body.global_position.distance_to(penItem.global_position) <= penApplyRadius:
-			# Mirrors SS14's OnInteractUsing: EditingDisabled (e.g. printed
-			# acquisition slips, see PaperVariants.isEditingDisabled) is checked
-			# before the stamp-based editable check and blocks writing outright,
-			# with no bypass - not even WriteIgnoreStamps/CyberPen can override it.
-			if PaperVariants.isEditingDisabled(body.get_meta("paperVariant", "default")):
-				_playFeedback(penItem.global_position, null, tr("ui_paper_tamper_proof"), true)
-				continue
+		if body.global_position.distance_to(penItem.global_position) > penApplyRadius:
+			continue
+		handled += 1
 
-			var stamps: Array = body.get_meta("stamps", [])
-			# Mirrors SS14's OnInteractUsing editable check: unstamped paper is
-			# always writable; a stamped paper needs WriteIgnoreStamps (full
-			# bypass) or, for ordinary (non-Protected) stamps only,
-			# NFWriteIgnoreUnprotectedStamps (canIgnoreStamps here).
-			if not stamps.is_empty():
-				var hasProtectedStamp = stamps.any(func(entry): return StampInfo.isProtected(entry.get("stampState", "")))
-				var canBypass = penItem.canIgnoreProtectedStamps or (penItem.canIgnoreStamps and not hasProtectedStamp)
-				if not canBypass:
-					_playFeedback(penItem.global_position, null, tr("ui_pen_blocked"), true)
-					continue
+		# The "Sign" verb signs any paper.
+		if signOnly:
+			trySign(body, penItem)
+			continue
 
-			# Mirrors SS14's OnInteractUsing: using a pen on paper opens (or
-			# refreshes) its UI directly into write mode, same as clicking a
-			# pen on paper does in-game - the player doesn't need to open the
-			# paper separately first.
-			openEditorFor(body)
-			body.set_meta("writingUnlocked", true)
-			openEditors[body].refreshWritingLock()
+		# Only unstamped paper is writable, unless the pen ignores stamps: all of them
+		# (WriteIgnoreStamps) or the unprotected ones (NFWriteIgnoreUnprotectedStamps).
+		var stamps: Array = body.get_meta("stamps", [])
+		var hasProtectedStamp = stamps.any(func(entry): return StampInfo.isProtected(entry.get("stampState", "")))
+		var editable = stamps.is_empty() or penItem.canIgnoreProtectedStamps or (penItem.canIgnoreStamps and not hasProtectedStamp)
+		if not editable:
+			# A pen that cannot write over the stamps signs the paper instead.
+			trySign(body, penItem)
+			continue
+
+		# EditingDisabled (e.g. printed acquisition slips) is only checked once writing
+		# is allowed, and then no pen can bypass it.
+		if PaperVariants.isEditingDisabled(body.get_meta("paperVariant", "default")):
+			_playFeedback(penItem.global_position, null, tr("ui_paper_tamper_proof"), true)
+			continue
+
+		# Using a pen on paper opens its UI directly in write mode.
+		openEditorFor(body)
+		body.set_meta("writingUnlocked", true)
+		openEditors[body].refreshWritingLock()
+	return handled
+
+# EmitSoundOnUse + UseDelay 1.5: using a pen in the hand clicks it.
+func clickPen(penItem: RigidBody2D) -> void :
+	if _isDelayed(penItem, "click"):
+		return
+	_playSoundAt(penItem.global_position, penClickSound, -4.0)
+	_setDelay(penItem, "click", PenInfo.clickDelaySeconds)
 
 # Mirrors SS14's TonerCartridgeSystem "Refill toner" verb, but single-use:
 # using a toner cartridge on the printer dumps its entire charge in at once
@@ -315,10 +386,16 @@ func _physics_process(delta: float) -> void :
 				applyLabelerToOverlaps(heldItem)
 			elif heldType == "stamp":
 				applyStampToOverlaps(heldItem)
-			elif heldType == "pen" or heldType == "cyberPen":
-				applyPenToOverlaps(heldItem)
+			elif heldType == "pen":
+				# Over a paper: write on it (or sign it); otherwise just click the pen.
+				if applyPenToOverlaps(heldItem) == 0:
+					clickPen(heldItem)
 			elif heldType == "tonerCartridge":
 				applyTonerCartridgeToPrinter(heldItem)
+
+		# The pen's "Sign" verb.
+		if Input.is_action_just_pressed("signDocument") and heldItem.get_meta("type", "") == "pen":
+			applyPenToOverlaps(heldItem, true)
 
 		if Input.is_action_just_pressed("snapRotation"):
 			_snapRotationTo45(heldItem)
@@ -363,8 +440,8 @@ func _snapRotationTo45(item: RigidBody2D) -> void :
 
 func _hover(item: RigidBody2D):
 	getItemSprite(item).use_parent_material = false
-	label.text = item.name
-	labelBGRect.size.x = label.get_theme_font("font").get_string_size(item.name).x + 3
+	label.text = getItemDisplayName(item)
+	labelBGRect.size.x = label.get_theme_font("font").get_string_size(getItemDisplayName(item)).x + 3
 	label.visible = true
 	hoveredItem = item
 	hovering = true

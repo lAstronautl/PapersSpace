@@ -2612,3 +2612,50 @@ stamp_name_preset_dead_drop_hint,Syndicate Logistics,Логистика Синд
 stamp_name_preset_frontier_birthday,Central Admiralty of Frontier,Central Admiralty of Frontier
 stamp_name_preset_frontier_fridge,Подписывающий-Документы,Подписывающий-Документы
 stamp_name_preset_party_procedure,Организатор-Вечеринок,Организатор-Вечеринок
+pen_name_pen,pen,ручка
+pen_name_luxury,luxury pen,роскошная ручка
+pen_name_cyber,Cybersun pen,ручка Cybersun
+pen_name_centcom,CentComm pen,ручка Центком
+pen_name_cap,captain's fountain pen,перьевая ручка капитана
+pen_name_hop,hop's fountain pen,перьевая ручка главы персонала
+pen_name_wizard,wizard's magical pen,магическая ручка волшебника
+pen_name_anco,Ручка АнКо,Ручка АнКо
+pen_name_pal,public affairs pen,ручка Представителя ЮД
+stamp_item_cap,captain's rubber stamp,печать капитана
+stamp_item_centcom,CentComm rubber stamp,печать Центкома
+stamp_item_chaplain,chaplain's rubber stamp,печать священника
+stamp_item_lawyer,lawyer's rubber stamp,печать юриста
+stamp_item_clown,clown's rubber stamp,печать клоуна
+stamp_item_ce,chief engineer's rubber stamp,печать старшего инженера
+stamp_item_cmo,chief medical officer's rubber stamp,печать главврача
+stamp_item_hop,head of personnel's rubber stamp,печать главы персонала
+stamp_item_hos,head of security's rubber stamp,печать главы службы безопасности
+stamp_item_mime,mime's rubber stamp,печать мима
+stamp_item_qm,quartermaster's rubber stamp,печать квартирмейстера
+stamp_item_rd,research director's rubber stamp,печать научного руководителя
+stamp_item_trader,trader's rubber stamp,печать торговца
+stamp_item_syndicate,syndicate rubber stamp,печать Синдиката
+stamp_item_warden,warden's rubber stamp,печать смотрителя
+stamp_item_ok,APPROVED rubber stamp,печать ОДОБРЕНО
+stamp_item_deny,DENIED rubber stamp,печать ОТКАЗАНО
+stamp_item_detective,detective's rubber stamp,печать детектива
+stamp_item_greytide,greytide's rubber stamp,печать грейтайда
+stamp_item_psychologist,psychologist's rubber stamp,печать психолога
+stamp_item_wizard,wizard's rubber stamp,печать волшебника
+stamp_item_sr,station representative's rubber stamp,печать представителя фронтира
+stamp_item_nf_stc,station traffic controller's rubber stamp,печать диспетчера
+stamp_item_nf_sheriff,sheriff's rubber stamp,печать шерифа
+stamp_item_nf_doctor,doctor's rubber stamp,печать врача
+stamp_item_nf_engineer,engineer's rubber stamp,печать инженера
+stamp_item_nf_pal,public affairs liaison's rubber stamp,печать представителя юридического департамента
+stamp_item_nf_doc,director of care's rubber stamp,печать менеджера медицинских операций
+stamp_item_nf_bailiff,bailiff's rubber stamp,печать бейлифа
+stamp_item_nf_plant_manager,plant manager's rubber stamp,печать управляющего электростанцией
+stamp_item_anco,печать АнКо,печать АнКо
+stamp_item_dipp,печать ДЗИС,печать ДЗИС
+stamp_item_dcs,печать ДКБ,печать ДКБ
+stamp_item_stardust,печать СтарДаст,печать СтарДаст
+stamp_item_miligalax,печать МилиГалакс,печать МилиГалакс
+stamp_item_subea,печать Сабеа,печать Сабеа
+stamp_item_lvhi,штамп LVHI,штамп LVHI
+stamp_item_trauma,печать Траумы,печать Траумы

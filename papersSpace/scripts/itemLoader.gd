@@ -11,7 +11,6 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 @export var labelerScene: PackedScene
 @export var stampScene: PackedScene
 @export var penScene: PackedScene
-@export var cyberPenScene: PackedScene
 @export var tonerCartridgeScene: PackedScene
 @export var paperScrapScene: PackedScene
 
@@ -22,6 +21,10 @@ func saveItems(path: String):
 	var saveData = []
 
 	for child in itemsParent.get_children():
+		# Sound players and other transient nodes live next to the items; only real
+		# items (which carry a type) are saved.
+		if not child.has_meta("type"):
+			continue
 		var nodeData = {
 			"name": child.name, 
 			"position": {
@@ -68,7 +71,16 @@ func loadItems(path: String):
 		child.queue_free()
 
 	for node_data in save_data:
-		var instance = getSceneFromType(node_data.meta.type).instantiate()
+		if not node_data.has("meta") or not node_data.meta.has("type"):
+			continue
+		# Saves from before every pen had its own state: "cyberPen" was the Cybersun pen.
+		if node_data.meta.type == "cyberPen":
+			node_data.meta.type = "pen"
+			node_data.meta.penState = "cyber"
+		var scene = getSceneFromType(node_data.meta.type)
+		if scene == null:
+			continue
+		var instance = scene.instantiate()
 		instance.name = node_data.name
 		instance.position = Vector2(node_data.position.x, node_data.position.y)
 		instance.rotation = node_data.rotation
@@ -84,7 +96,7 @@ func loadItems(path: String):
 			var variantConfig = PaperVariants.getConfig(instance.get_meta("paperVariant", "default"))
 			if variantConfig.has("worldTexture"):
 				sprite.setVariantTextures(load(variantConfig.worldTexture), load(variantConfig.get("worldTextureEmpty", variantConfig.worldTexture)))
-			if instance.get_meta("content").length() > 0:
+			if str(instance.get_meta("content", "")).length() > 0:
 				sprite.setActiveTexture(true)
 			else:
 				sprite.setActiveTexture(false)
@@ -93,6 +105,9 @@ func loadItems(path: String):
 
 		if instance.get_meta("type") == "stamp" and instance.has_meta("stampState"):
 			instance.setVariant(instance.get_meta("stampState"))
+
+		if instance.get_meta("type") == "pen":
+			instance.setVariant(instance.get_meta("penState", "pen"))
 
 		itemsParent.add_child(instance)
 
@@ -112,8 +127,6 @@ func getSceneFromType(type: String) -> PackedScene:
 			return stampScene
 		"pen":
 			return penScene
-		"cyberPen":
-			return cyberPenScene
 		"tonerCartridge":
 			return tonerCartridgeScene
 		"paperScrap":

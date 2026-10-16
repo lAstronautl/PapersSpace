@@ -23,6 +23,7 @@ const StyleBoxScript = preload("res://scripts/robustStyleBox.gd")
 const StampWidgetScript = preload("res://scripts/paperStampWidget.gd")
 const StampInfo = preload("res://scripts/stampInfo.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
+const PaperSounds = preload("res://scripts/paperSounds.gd")
 
 const angleRectTexture = preload("res://png/ui/button.png")
 const crossTexture = preload("res://png/ui/cross.png")
@@ -260,7 +261,7 @@ func open(item: RigidBody2D) -> void:
 	var variantId: String = item.get_meta("paperVariant", "default")
 	vis = PaperVariants.getVisuals(variantId)
 	maxContentLength = PaperVariants.getContentSize(variantId)
-	_textEdit.text = item.get_meta("content")
+	_textEdit.text = item.get_meta("content", "")
 
 	# Mirrors SS14's PaperSystem.BeforeUIOpen: opening the paper by itself (no pen)
 	# always resets it to read-only mode.
@@ -406,7 +407,11 @@ func refreshStamps() -> void:
 		if not entry.has("stampState"):
 			continue
 		var widget = StampWidgetScript.new()
-		widget.setup(tr(StampInfo.getStampName(entry.stampState)), StampInfo.getStampColor(entry.stampState))
+		if entry.stampState == "signature":
+			# A pen signature: the signer's name in the pen's colour, without a border.
+			widget.setup(str(entry.get("signer", "")), Color.html(str(entry.get("color", "#333333ff"))), true)
+		else:
+			widget.setup(tr(StampInfo.getStampName(entry.stampState)), StampInfo.getStampColor(entry.stampState))
 		_stampLayer.add_child(widget)
 		_stampWidgets.append(widget)
 	_layout()
@@ -633,8 +638,17 @@ func save() -> void:
 		var sprite = currentItem.get_node("CollisionShape2D").get_node("Sprite2D")
 		sprite.setActiveTexture(currentItem.get_meta("content").length() > 0)
 
+# PaperSystem.OnInputTextMessage: saving writes the text, plays the paper's scribble
+# sound and returns the paper to read mode.
+func _commit() -> void:
+	if _textEdit.text.length() <= maxContentLength:
+		save()
+		PaperSounds.play(self)
+	currentItem.set_meta("writingUnlocked", false)
+	refreshWritingLock()
+
 func _save_button_pressed() -> void:
-	save()
+	_commit()
 
 func _close_button_pressed() -> void:
 	closed.emit()
@@ -655,8 +669,8 @@ func _input(event: InputEvent) -> void:
 	if not Rect2(global_position, size).has_point(get_global_mouse_position()):
 		return
 
-	if event.is_action("saveDocument"):
-		save()
+	if event.is_action("saveDocument") and isEditing:
+		_commit()
 	if event.is_action("closeEditor"):
 		closed.emit()
 

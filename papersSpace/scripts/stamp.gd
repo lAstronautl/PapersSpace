@@ -11,6 +11,8 @@ func _ready() -> void :
 
 func setVariant(newStampState: String) -> void :
 	stampState = StampInfo.resolveKey(newStampState)
+	# Only metadata is saved, so the state has to live there too.
+	set_meta("stampState", stampState)
 	var texturePath = itemSpritesPath + "stamp-" + stampState + ".png"
 	if not ResourceLoader.exists(texturePath):
 		return

@@ -11,6 +11,12 @@ extends Node
 #   protected - Stamp.protected (blocks Frontier's unprotected-stamp pen bypass)
 #   reapply   - Stamp.reapply (may be applied repeatedly, up to reapplyLimit)
 # The item sprite is png/item/stamps/stamp-<key>.png.
+# sound: how the stamp sounds when applied (Stamp.sound): "thick" (default),
+#        "automatic" (APPROVED/DENIED) or "none" (the mime's stamp).
+const stampSounds = {
+	"thick": preload("res://sfx/stamp_thick.ogg"),
+	"automatic": preload("res://sfx/automatic_stamp.ogg"),
+}
 const stampLimit = 100
 const reapplyLimit = 10
 
@@ -24,14 +30,14 @@ const stampData = {
 	"cmo": {"name": "stamp_name_cmo", "color": "#33ccff"},  # RubberStampCMO
 	"hop": {"name": "stamp_name_hop", "color": "#6ec0ea"},  # RubberStampHop
 	"hos": {"name": "stamp_name_hos", "color": "#cc0000"},  # RubberStampHos
-	"mime": {"name": "stamp_name_mime", "color": "#777777"},  # RubberStampMime
+	"mime": {"name": "stamp_name_mime", "color": "#777777", "sound": "none"},  # RubberStampMime
 	"qm": {"name": "stamp_name_qm", "color": "#a23e3e"},  # RubberStampQm
 	"rd": {"name": "stamp_name_rd", "color": "#1f66a0"},  # RubberStampRd
 	"trader": {"name": "stamp_name_trader", "color": "#000000"},  # RubberStampTrader
 	"syndicate": {"name": "stamp_name_syndicate", "color": "#850000"},  # RubberStampSyndicate
 	"warden": {"name": "stamp_name_warden", "color": "#5b0000"},  # RubberStampWarden
-	"ok": {"name": "stamp_name_ok", "color": "#00be00", "reapply": true},  # RubberStampApproved
-	"deny": {"name": "stamp_name_deny", "color": "#a23e3e", "reapply": true},  # RubberStampDenied
+	"ok": {"name": "stamp_name_ok", "color": "#00be00", "reapply": true, "sound": "automatic"},  # RubberStampApproved
+	"deny": {"name": "stamp_name_deny", "color": "#a23e3e", "reapply": true, "sound": "automatic"},  # RubberStampDenied
 	"detective": {"name": "stamp_name_detective", "color": "#754d36"},  # RubberStampDetective
 	"greytide": {"name": "stamp_name_greytide", "color": "#323232"},  # RubberStampGreytide
 	"psychologist": {"name": "stamp_name_psychologist", "color": "#3366ff", "mark": "nf-psychologist"},  # RubberStampPsychologist
@@ -53,6 +59,8 @@ const stampData = {
 	"subea": {"name": "stamp_name_subea", "color": "#b30e0e"},  # RubberStampAnCoSubea
 	"lvhi": {"name": "stamp_name_lvhi", "color": "#e26817", "mark": "nf-engineer"},  # RubberStampLVHI
 	"trauma": {"name": "stamp_name_trauma", "color": "#ff0303", "mark": "nf-stc"},  # RubberStampTrauma
+	# A pen's signature: the name and colour live in the stamp entry itself (not spawnable).
+	"signature": {"name": "stamp_name_default", "color": "#333333", "mark": "nf-signature", "nospawn": true},
 	# --- preset stamps (generated): stamps a printed form already carries; not spawnable ---
 	"preset-dead-drop-fax": {"name": "stamp_name_preset_dead_drop_fax", "color": "#850000", "mark": "syndicate", "nospawn": true},
 	"preset-dead-drop-hint": {"name": "stamp_name_preset_dead_drop_hint", "color": "#850000", "mark": "generic", "nospawn": true},
@@ -86,6 +94,9 @@ static func getStampMark(stampState: String) -> String:
 
 static func isProtected(stampState: String) -> bool:
 	return stampData.get(resolveKey(stampState), {}).get("protected", false)
+
+static func getStampSound(stampState: String) -> AudioStream:
+	return stampSounds.get(stampData.get(resolveKey(stampState), {}).get("sound", "thick"), null)
 
 static func canReapply(stampState: String) -> bool:
 	return stampData.get(resolveKey(stampState), {}).get("reapply", false)

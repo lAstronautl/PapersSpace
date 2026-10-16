@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ehq2p8w1m6r3x"]
 
 [ext_resource type="Material" uid="uid://bsea5sow584ri" path="res://shaders/outline.tres" id="1"]
-[ext_resource type="Texture2D" path="res://png/item/pens/pen.png" id="2"]
+[ext_resource type="Texture2D" path="res://png/item/pens/pen-pen.png" id="2"]
 [ext_resource type="Script" path="res://scripts/pen.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pen1"]
@@ -13,7 +13,7 @@ collision_layer = 16
 collision_mask = 0
 input_pickable = true
 script = ExtResource("3")
-canIgnoreStamps = false
+penState = "pen"
 metadata/type = "pen"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

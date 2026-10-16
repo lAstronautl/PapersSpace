@@ -23,7 +23,6 @@
 [ext_resource type="PackedScene" path="res://prefabs/stamp.tscn" id="30"]
 [ext_resource type="AudioStream" path="res://sfx/stamp_thick.ogg" id="31"]
 [ext_resource type="PackedScene" path="res://prefabs/pen.tscn" id="32"]
-[ext_resource type="PackedScene" path="res://prefabs/cyberPen.tscn" id="33"]
 [ext_resource type="Texture2D" uid="uid://dfgwtcea6xrwc" path="res://png/item/paper/paper_words.png" id="34"]
 [ext_resource type="PackedScene" uid="uid://dq8n3p6m9x2w7" path="res://prefabs/printer.tscn" id="35"]
 [ext_resource type="AudioStream" path="res://sfx/printer_scan.ogg" id="36"]
@@ -87,7 +86,6 @@ wehScene = ExtResource("4")
 labelerScene = ExtResource("27")
 stampScene = ExtResource("30")
 penScene = ExtResource("32")
-cyberPenScene = ExtResource("33")
 tonerCartridgeScene = ExtResource("38")
 
 [node name="itemInteractionControler" type="Node2D" parent="worldView/worldViewport" unique_id=499599145]
@@ -95,7 +93,6 @@ script = ExtResource("5")
 paperEditorScene = ExtResource("25")
 labelerEditorScene = ExtResource("26")
 floatingNoticeScene = ExtResource("28")
-stampAppliedSound = ExtResource("31")
 tonerInsertSound = ExtResource("43")
 
 [node name="env" type="Node2D" parent="worldView/worldViewport" unique_id=1146637253]
@@ -185,11 +182,12 @@ stampState = "ok"
 position = Vector2(135, 45)
 stampState = "deny"
 
-[node name="pen" parent="worldView/worldViewport/items" instance=ExtResource("32")]
+[node name="pen-pen" parent="worldView/worldViewport/items" instance=ExtResource("32")]
 position = Vector2(150, 30)
 
-[node name="cyberPen" parent="worldView/worldViewport/items" instance=ExtResource("33")]
+[node name="pen-cyber" parent="worldView/worldViewport/items" instance=ExtResource("32")]
 position = Vector2(150, 45)
+penState = "cyber"
 
 [node name="tonerCartridge" parent="worldView/worldViewport/items" instance=ExtResource("38")]
 position = Vector2(165, 30)
@@ -215,6 +213,7 @@ script = ExtResource("8")
 script = ExtResource("9")
 pointingArrow = ExtResource("10")
 stampScene = ExtResource("30")
+penScene = ExtResource("32")
 
 [node name="lighting" type="Node2D" parent="worldView/worldViewport" unique_id=1954564798]
 

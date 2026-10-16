@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjjuw7282mj0f"
-path="res://.godot/imported/pen.png-a084195903e60fe830a829eb60cd7cf4.ctex"
+uid="uid://vvcw7nn6hqsc"
+path="res://.godot/imported/pen-hop.png-0f1520f5498766e22951a70509ece1b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://png/item/pens/pen.png"
-dest_files=["res://.godot/imported/pen.png-a084195903e60fe830a829eb60cd7cf4.ctex"]
+source_file="res://png/item/pens/pen-hop.png"
+dest_files=["res://.godot/imported/pen-hop.png-0f1520f5498766e22951a70509ece1b0.ctex"]
 
 [params]
 
