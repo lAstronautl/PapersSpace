@@ -1,10 +1,8 @@
 extends Node2D
 
-const stampVariants = ["cap", "ce", "centcom", "chaplain", "clown", "cmo", "deny",
-	"detective", "greytide", "hop", "hos", "lawyer", "mime", "nf-bailiff", "nf-doc",
-	"nf-doctor", "nf-engineer", "nf-pal", "nf-plant-manager", "nf-psychologist",
-	"nf-sheriff", "nf-stc", "ok", "psychologist", "qm", "rd", "syndicate", "trader",
-	"warden", "wizard"]
+const StampInfo = preload("res://scripts/stampInfo.gd")
+
+var stampVariants: Array = StampInfo.getStampKeys()
 
 @export var pointingArrow: PackedScene
 @export var stampScene: PackedScene

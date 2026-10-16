@@ -2,13 +2,15 @@ extends RigidBody2D
 
 @export var stampState: String = "cap"
 
+const StampInfo = preload("res://scripts/stampInfo.gd")
+
 const itemSpritesPath = "res://png/item/stamps/"
 
 func _ready() -> void :
 	setVariant(stampState)
 
 func setVariant(newStampState: String) -> void :
-	stampState = newStampState
+	stampState = StampInfo.resolveKey(newStampState)
 	var texturePath = itemSpritesPath + "stamp-" + stampState + ".png"
 	if not ResourceLoader.exists(texturePath):
 		return

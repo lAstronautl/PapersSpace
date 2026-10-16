@@ -1,11 +1,9 @@
 extends Node2D
 
+const StampInfo = preload("res://scripts/stampInfo.gd")
+
 const stampMarksPath = "res://png/item/paper/stampMarks/"
 const stampScale = 1.0
-
-const markAliases = {
-	"nf-doc": "cmo",
-}
 
 # Mirrors SS14's PaperComponent.StampedBy: every stamp ever applied is kept
 # here for the UI's StampCollection widget, but PaperVisualizerSystem only
@@ -32,7 +30,7 @@ func addStamp(stampState: String, stampRotation: float, stampPosition: Vector2) 
 	if _visibleStamp:
 		return
 
-	var markState = markAliases.get(stampState, stampState)
+	var markState = StampInfo.getStampMark(stampState)
 	var texturePath = stampMarksPath + "paper_stamp-" + markState + ".png"
 	if not ResourceLoader.exists(texturePath):
 		return

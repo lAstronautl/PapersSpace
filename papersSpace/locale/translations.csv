@@ -24,35 +24,43 @@ ui_recycler_busy,working...,работает...
 ui_recycler_item_loaded,items: %d,предметов: %d
 stamp_name_default,A very important person,Очень важная персона
 stamp_name_cap,Captain,Капитан
-stamp_name_ce,Chief Engineer,Старший инженер
 stamp_name_centcom,CentComm,Центком
 stamp_name_chaplain,Chaplain,Священник
+stamp_name_lawyer,Lawyer,Юрист
 stamp_name_clown,Clown,Клоун
+stamp_name_ce,Chief Engineer,Старший инженер
 stamp_name_cmo,Chief Medical Officer,Главврач
+stamp_name_hop,Head of Personnel,Глава персонала
+stamp_name_hos,Sheriff,Глава службы безопасности
+stamp_name_mime,Mime,Мим
+stamp_name_qm,Quartermaster,Квартирмейстер
+stamp_name_rd,Research Director,Научный руководитель
+stamp_name_trader,Trader,Торговец
+stamp_name_syndicate,Syndicate,Синдикат
+stamp_name_warden,Bailiff,Смотритель
+stamp_name_ok,APPROVED,ОДОБРЕНО
 stamp_name_deny,DENIED,ОТКАЗАНО
 stamp_name_detective,Detective,Детектив
 stamp_name_greytide,Greytide,Грейтайд
-stamp_name_hop,Head of Personnel,Глава персонала
-stamp_name_hos,Sheriff,Глава службы безопасности
-stamp_name_lawyer,Lawyer,Юрист
-stamp_name_mime,Mime,Мим
-stamp_name_nf_bailiff,Bailiff,Бейлиф
-stamp_name_nf_doc,Director of Care,Менеджер медицинских операций
+stamp_name_psychologist,Psychologist,Психолог
+stamp_name_wizard,Wizard,Wizard
+stamp_name_sr,Station Representative,Представитель Фронтира
+stamp_name_nf_stc,Station Traffic Controller,Диспетчер аванпоста
+stamp_name_nf_sheriff,Sheriff,Глава службы безопасности
 stamp_name_nf_doctor,Doctor,Доктор
 stamp_name_nf_engineer,Engineer,Инженер
 stamp_name_nf_pal,Public Affairs Liaison,Офицер по связям с общественностью
-stamp_name_nf_plant_manager,Plant Manager,Управляющий электростанцией
-stamp_name_nf_psychologist,Psychologist,Психолог
-stamp_name_nf_sheriff,Sheriff,Шериф
-stamp_name_nf_stc,Traffic Controller,Диспетчер
-stamp_name_ok,APPROVED,ОДОБРЕНО
-stamp_name_psychologist,Psychologist,Психолог
-stamp_name_qm,Quartermaster,Квартирмейстер
-stamp_name_rd,Research Director,Научный руководитель
-stamp_name_syndicate,Syndicate,Синдикат
-stamp_name_trader,Trader,Торговец
-stamp_name_warden,Bailiff,Смотритель
-stamp_name_wizard,Wizard,Волшебник
+stamp_name_nf_doc,Director of Care,Менеджер медицинских операций
+stamp_name_nf_bailiff,Bailiff,Бейлиф
+stamp_name_nf_plant_manager,Plant Manager,Управляющий Электростанцией
+stamp_name_anco,AnroxComputer’s,AnroxComputer’s
+stamp_name_dipp,ДЗИС,ДЗИС
+stamp_name_dcs,ДКБ,ДКБ
+stamp_name_stardust,StarDust Ind.,StarDust Ind.
+stamp_name_miligalax,MiliGalax Sec.,MiliGalax Sec.
+stamp_name_subea,Subea Farm.,Subea Farm.
+stamp_name_lvhi,LANGSTAD-VOIGT HEAVY INDUSTRIES,LANGSTAD-VOIGT HEAVY INDUSTRIES
+stamp_name_trauma,✱ТТИ✱,✱ТТИ✱
 item_tutorial_name,right click me,кликни по мне ПКМ
 item_tutorial_content,"hi! :3
 this is a note-taking program i made for fun. i hope you enjoy it.

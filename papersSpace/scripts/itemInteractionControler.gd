@@ -163,11 +163,17 @@ func applyStampToOverlaps(stampItem: RigidBody2D) -> void :
 		if body.get_meta("type", "") != "txt":
 			continue
 		if body.global_position.distance_to(stampItem.global_position) <= stampApplyRadius:
-			# Mirrors SS14's PaperSystem.CanStamp: a non-reapply stamp can't
-			# be applied twice with the same stamp state on the same paper.
+			# Mirrors Frontier's PaperSystem.CanStamp: at most stampLimit stamps per
+			# paper; a stamp can't be applied twice, unless it is a reapply stamp
+			# (APPROVED/DENIED), which may be applied up to reapplyLimit times.
 			var stamps: Array = body.get_meta("stamps", [])
-			var alreadyStamped = stamps.any(func(entry): return entry.get("stampState", "") == stampItem.stampState)
-			if alreadyStamped:
+			if stamps.size() >= StampInfo.stampLimit:
+				continue
+			var sameCount = stamps.filter(func(entry): return StampInfo.resolveKey(entry.get("stampState", "")) == stampItem.stampState).size()
+			if StampInfo.canReapply(stampItem.stampState):
+				if sameCount >= StampInfo.reapplyLimit:
+					continue
+			elif sameCount > 0:
 				continue
 
 			var overlay = body.get_node("CollisionShape2D/StampOverlay")
