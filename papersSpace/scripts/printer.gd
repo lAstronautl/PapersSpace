@@ -7,7 +7,6 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 const maxToner = 30
 const tonerPerPage = 1
 
-@export var paperScene: PackedScene
 @export var printerEditorScene: PackedScene
 @export var scanSound: AudioStream
 @export var printSound: AudioStream
@@ -16,6 +15,7 @@ const tonerPerPage = 1
 @onready var lightOverlay: Sprite2D = $LightOverlay
 @onready var insertOverlay: Sprite2D = $InsertOverlay
 @onready var itemInteractionControler: Node2D = $"../itemInteractionControler"
+@onready var itemLoader: Node2D = $"../itemLoader"
 @onready var itemsParent: Node2D = $"../items"
 @onready var editorsLayer: Control = $"../../../editorsLayer"
 
@@ -217,33 +217,7 @@ func ejectInsertedPaper() -> void :
 	insertedPaper = null
 
 func _spawnPaper(paperVariant: String, content: String, stamps: Array, baseName: String = "paper") -> void :
-	var config = PaperVariants.getConfig(paperVariant)
-
-	var item = paperScene.instantiate()
-	var instanceName = baseName
-	var dupelicateNumber = 1
-	while itemsParent.has_node(instanceName):
-		dupelicateNumber += 1
-		instanceName = baseName + str(dupelicateNumber)
-	item.name = instanceName
-
-	item.set_meta("content", content)
-	item.set_meta("paperVariant", paperVariant)
-	item.set_meta("paperStyle", config.get("color", "default"))
-	item.global_position = global_position + Vector2(0, 16)
-
-	itemsParent.add_child(item)
-	itemInteractionControler.initItem(item)
-
-	var sprite2D = item.get_node("CollisionShape2D").get_node("Sprite2D")
-	sprite2D.setPaperStyle(config.get("color", "default"))
-	if config.has("worldTexture"):
-		sprite2D.setVariantTextures(load(config.worldTexture), load(config.get("worldTextureEmpty", config.worldTexture)))
-	sprite2D.setActiveTexture(content.length() > 0)
-
-	if not stamps.is_empty():
-		item.set_meta("stamps", stamps)
-		item.get_node("CollisionShape2D/StampOverlay").loadStamps(stamps)
+	itemLoader.createPaper(paperVariant, content, stamps, baseName, global_position + Vector2(0, 16))
 
 func _playSound(sound: AudioStream) -> void :
 	if not sound:

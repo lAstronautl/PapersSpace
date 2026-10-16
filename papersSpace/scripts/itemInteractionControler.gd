@@ -157,7 +157,7 @@ func applyLabelerToOverlaps(labelerItem: RigidBody2D) -> void :
 			# name modifier (not a name replacement) and no sound is played -
 			# only a client-side "applied" popup.
 			if labelerItem.applyLabelTo(body):
-				_playFeedback(labelerItem.global_position, null, tr("ui_label_applied"))
+				playFeedback(labelerItem.global_position, null, tr("ui_label_applied"))
 
 # --- stamps, pens (PaperSystem.OnInteractUsing) ---------------------------------------
 
@@ -227,7 +227,7 @@ func applyStampToOverlaps(stampItem: RigidBody2D) -> void :
 			if _canStamp(stamps, stampItem.stampState):
 				_addStampToPaper(body, {"stampState": stampItem.stampState})
 			_playSoundAt(stampItem.global_position, StampInfo.getStampSound(stampItem.stampState), -2.0)
-			_playFeedback(stampItem.global_position, null, tr("ui_stamp_applied") % [body.name, getItemDisplayName(stampItem)])
+			playFeedback(stampItem.global_position, null, tr("ui_stamp_applied") % [body.name, getItemDisplayName(stampItem)])
 			_setDelay(stampItem, "stamp", PenInfo.stampDelaySeconds)
 
 # Pen signature: a stamp of Type Signature, named after the signer, in the pen's colour.
@@ -241,7 +241,7 @@ func trySign(paper: RigidBody2D, penItem: RigidBody2D) -> bool:
 	if stamps.size() < StampInfo.stampLimit and not duplicate:
 		_addStampToPaper(paper, {"stampState": "signature", "signer": signer, "color": color})
 	PaperSounds.play(itemsParent, paper.global_position)
-	_playFeedback(penItem.global_position, null, tr("ui_signed") % paper.name)
+	playFeedback(penItem.global_position, null, tr("ui_signed") % paper.name)
 	_setDelay(penItem, "stamp", PenInfo.stampDelaySeconds)
 	return true
 
@@ -275,7 +275,7 @@ func applyPenToOverlaps(penItem: RigidBody2D, signOnly: bool = false) -> int:
 		# EditingDisabled (e.g. printed acquisition slips) is only checked once writing
 		# is allowed, and then no pen can bypass it.
 		if PaperVariants.isEditingDisabled(body.get_meta("paperVariant", "default")):
-			_playFeedback(penItem.global_position, null, tr("ui_paper_tamper_proof"), true)
+			playFeedback(penItem.global_position, null, tr("ui_paper_tamper_proof"), true)
 			continue
 
 		# Using a pen on paper opens its UI directly in write mode.
@@ -301,11 +301,11 @@ func applyTonerCartridgeToPrinter(cartridge: RigidBody2D) -> void :
 		return
 
 	if printer.toner >= printer.maxToner:
-		_playFeedback(cartridge.global_position, null, tr("ui_printer_full"), true)
+		playFeedback(cartridge.global_position, null, tr("ui_printer_full"), true)
 		return
 
 	cartridge.refillInto(printer)
-	_playFeedback(cartridge.global_position, tonerInsertSound, tr("ui_printer_refilled"))
+	playFeedback(cartridge.global_position, tonerInsertSound, tr("ui_printer_refilled"))
 	_consumeCartridge(cartridge)
 
 func _consumeCartridge(cartridge: RigidBody2D) -> void :
@@ -324,7 +324,7 @@ func _worldToScreen(worldPos: Vector2) -> Vector2:
 	var containerScale = worldViewContainer.size / Vector2(worldViewContainer.get_node("worldViewport").size)
 	return worldViewContainer.global_position + viewportLocal * containerScale
 
-func _playFeedback(atPosition: Vector2, sound: AudioStream, message: String, caution: bool = false) -> void :
+func playFeedback(atPosition: Vector2, sound: AudioStream, message: String, caution: bool = false) -> void :
 	if sound:
 		var audioPlayer = AudioStreamPlayer2D.new()
 		itemsParent.add_child(audioPlayer)

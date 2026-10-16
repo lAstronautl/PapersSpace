@@ -1,0 +1,40 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/vendingMachine.gd" id="1"]
+[ext_resource type="PackedScene" path="res://prefabs/vendingEditor.tscn" id="2"]
+[ext_resource type="AudioStream" path="res://sfx/machine_vend.ogg" id="3"]
+[ext_resource type="AudioStream" path="res://sfx/custom_deny.ogg" id="4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vnd1"]
+size = Vector2(26, 32)
+
+[sub_resource type="Gradient" id="Gradient_vnd1"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vnd1"]
+gradient = SubResource("Gradient_vnd1")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.16666667, 0.16666667)
+
+[node name="vending" type="Area2D"]
+collision_layer = 256
+collision_mask = 0
+input_pickable = true
+script = ExtResource("1")
+vendingEditorScene = ExtResource("2")
+vendSound = ExtResource("3")
+denySound = ExtResource("4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_vnd1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Screen" type="Sprite2D" parent="."]
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0.616, 0.773, 0.788, 1)
+energy = 0.8
+texture = SubResource("GradientTexture2D_vnd1")
+texture_scale = 2.0

@@ -113,6 +113,39 @@ func loadItems(path: String):
 
 	print("Loaded successfully")
 
+# A fresh paper of the given visual type: the printer prints these and the
+# vending machine dispenses them. `baseName` gets a number appended until it is
+# unique among the items.
+func createPaper(paperVariant: String, content: String, stamps: Array, baseName: String, at: Vector2) -> RigidBody2D:
+	var config = PaperVariants.getConfig(paperVariant)
+
+	var item = paperScene.instantiate()
+	var instanceName = baseName
+	var duplicateNumber = 1
+	while itemsParent.has_node(instanceName):
+		duplicateNumber += 1
+		instanceName = baseName + str(duplicateNumber)
+	item.name = instanceName
+
+	item.set_meta("content", content)
+	item.set_meta("paperVariant", paperVariant)
+	item.set_meta("paperStyle", config.get("color", "default"))
+	item.global_position = at
+
+	itemsParent.add_child(item)
+	$"../itemInteractionControler".initItem(item)
+
+	var sprite2D = item.get_node("CollisionShape2D").get_node("Sprite2D")
+	sprite2D.setPaperStyle(config.get("color", "default"))
+	if config.has("worldTexture"):
+		sprite2D.setVariantTextures(load(config.worldTexture), load(config.get("worldTextureEmpty", config.worldTexture)))
+	sprite2D.setActiveTexture(content.length() > 0)
+
+	if not stamps.is_empty():
+		item.set_meta("stamps", stamps)
+		item.get_node("CollisionShape2D/StampOverlay").loadStamps(stamps)
+	return item
+
 func getSceneFromType(type: String) -> PackedScene:
 	match type:
 		"txt":

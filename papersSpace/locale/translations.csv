@@ -100,3 +100,21 @@ ui_stamp_applied,You stamp the %s with the %s.,Вы ставите печать 
 ui_signed,You sign the %s.,Вы подписываете %s.
 ui_paper_tamper_proof,This page was written using tamper-proof ink.,Текст на странице был написан с использованием нефальсицицируемых чернил.
 ui_signer_default,Anonymous,Аноним
+ui_vend_title,Vendomat,Вендомат
+ui_vend_search,Search...,Поиск...
+ui_vend_flavor_left,All sales final.,Все продажи окончательны.
+ui_vend_flavor_right,v1.1,v1.1
+ui_vend_thanks,Thanks for using %s!,Спасибо что воспользовались %s!
+ui_vend_invalid_item,Invalid item,Несуществующий предмет
+ui_vend_ad_1,Only the finest!,Только самое лучшее!
+ui_vend_ad_2,Have some tools.,Возьмите инструментов.
+ui_vend_ad_3,The most robust equipment.,Самое надежное оборудование.
+ui_vend_ad_4,The finest gear in space!,Лучшее снаряжение в космосе!
+ui_vend_ad_5,This is surely better than standard issued equipment!,"Это, безусловно, лучше, чем стандартное снаряжение!"
+ui_vend_ad_6,Get your good ol' crowbar here!,Получите ваш старый добрый лом!
+ui_vend_ad_7,Here for when you need a full set of tools!,"Здесь на случай, когда понадобится полный набор инструментов!"
+ui_vend_item_flop,floppy disk,дискета
+ui_vend_item_weh,weh,вех
+ui_vend_item_labeler,hand labeler,ручной этикетировщик
+ui_vend_item_tonerCartridge,toner cartridge,картридж с тонером
+ui_vend_item_paperScrap,paper scrap,клочок бумаги

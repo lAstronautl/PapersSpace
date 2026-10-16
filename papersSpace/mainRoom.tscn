@@ -34,6 +34,7 @@
 [ext_resource type="AudioStream" path="res://sfx/recycler_flush.ogg" id="42"]
 [ext_resource type="AudioStream" path="res://sfx/toner_insert.ogg" id="43"]
 [ext_resource type="Texture2D" path="res://png/background/space_stars.png" id="44"]
+[ext_resource type="PackedScene" path="res://prefabs/vending.tscn" id="45"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_club8"]
 
@@ -87,6 +88,7 @@ labelerScene = ExtResource("27")
 stampScene = ExtResource("30")
 penScene = ExtResource("32")
 tonerCartridgeScene = ExtResource("38")
+paperScrapScene = ExtResource("39")
 
 [node name="itemInteractionControler" type="Node2D" parent="worldView/worldViewport" unique_id=499599145]
 script = ExtResource("5")
@@ -159,6 +161,9 @@ printSound = ExtResource("37")
 position = Vector2(170, 140)
 insertSound = ExtResource("41")
 flushSound = ExtResource("42")
+
+[node name="vending" parent="worldView/worldViewport" instance=ExtResource("45")]
+position = Vector2(170, 56)
 
 [node name="items" type="Node2D" parent="worldView/worldViewport" unique_id=851823581]
 y_sort_enabled = true

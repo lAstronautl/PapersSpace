@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dq8n3p6m9x2w7"]
+[gd_scene load_steps=4 format=3 uid="uid://dq8n3p6m9x2w7"]
 
 [ext_resource type="Script" path="res://scripts/printer.gd" id="1"]
 [ext_resource type="Texture2D" path="res://png/machines/printer/printer_icon.png" id="2"]
-[ext_resource type="PackedScene" uid="uid://cdg2688qhm514" path="res://prefabs/paper.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://c8n2q4p6m9x1r" path="res://prefabs/printerEditor.tscn" id="4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_prt1"]
@@ -13,7 +12,6 @@ collision_layer = 32
 collision_mask = 0
 input_pickable = true
 script = ExtResource("1")
-paperScene = ExtResource("3")
 printerEditorScene = ExtResource("4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
