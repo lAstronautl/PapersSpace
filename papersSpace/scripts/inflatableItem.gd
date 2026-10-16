@@ -3,6 +3,7 @@ extends RigidBody2D
 # InflatableWallStack / InflatableDoorStack: a folded stack that is unfolded into
 # the structure with SpawnAfterInteract (1 s per use). Only metadata is saved:
 # kind ("wall" or "door") and the number of pieces left.
+const SpriteBounds = preload("res://scripts/spriteBounds.gd")
 const kinds = {
 	"wall": {"texture": "res://png/item/inflatable/item_wall.png", "count": 10},
 	"door": {"texture": "res://png/item/inflatable/item_door.png", "count": 4},
@@ -19,3 +20,4 @@ func setVariant(kind: String, count: int = -1) -> void :
 	var texture = load(kinds[kind].texture)
 	get_node("CollisionShape2D/Sprite2D").texture = texture
 	get_node("CollisionShape2D/shadow").texture = texture
+	SpriteBounds.fit(self)

@@ -5,6 +5,7 @@ const PenInfo = preload("res://scripts/penInfo.gd")
 const SignerName = preload("res://scripts/signerName.gd")
 const penClickSound = preload("res://sfx/pen_click.ogg")
 const DoAfterBar = preload("res://scripts/doAfterBar.gd")
+const SpriteBounds = preload("res://scripts/spriteBounds.gd")
 const ratchetSound = preload("res://sfx/ratchet.ogg")
 const PaperSounds = preload("res://scripts/paperSounds.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
@@ -105,6 +106,8 @@ func _init_all():
 		initItem(child)
 
 func initItem(item: RigidBody2D):
+	if item.get_meta("type", "") != "txt":
+		SpriteBounds.fit(item)
 	item.mouse_entered.connect(_on_mouse_entered.bind(item))
 	item.mouse_exited.connect(_on_mouse_exited.bind(item))
 	item.tree_exiting.connect(_on_item_removed.bind(item))

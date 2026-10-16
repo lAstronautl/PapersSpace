@@ -2,6 +2,7 @@ extends RigidBody2D
 
 # A writing pen. penState selects which of StarHorizon's pens it is (penInfo.gd);
 # the item sprite is png/item/pens/pen-<penState>.png.
+const SpriteBounds = preload("res://scripts/spriteBounds.gd")
 const PenInfo = preload("res://scripts/penInfo.gd")
 
 const itemSpritesPath = "res://png/item/pens/pen-"
@@ -28,3 +29,4 @@ func setVariant(newPenState: String) -> void :
 	var texture = load(texturePath)
 	get_node("CollisionShape2D/Sprite2D").texture = texture
 	get_node("CollisionShape2D/shadow").texture = texture
+	SpriteBounds.fit(self)

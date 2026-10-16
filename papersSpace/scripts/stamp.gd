@@ -2,6 +2,7 @@ extends RigidBody2D
 
 @export var stampState: String = "cap"
 
+const SpriteBounds = preload("res://scripts/spriteBounds.gd")
 const StampInfo = preload("res://scripts/stampInfo.gd")
 
 const itemSpritesPath = "res://png/item/stamps/"
@@ -19,3 +20,4 @@ func setVariant(newStampState: String) -> void :
 	var texture = load(texturePath)
 	get_node("CollisionShape2D/Sprite2D").texture = texture
 	get_node("CollisionShape2D/shadow").texture = texture
+	SpriteBounds.fit(self)
