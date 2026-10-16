@@ -7,18 +7,12 @@ extends Area2D
 # the StaticBody2D, which items bump into.
 const size = Vector2(32, 32)
 const deflateSeconds = 3.0
-# Damageable (StructuralInorganic) with the Inflatable modifier set, destroyed at
-# 20 damage: a flat reduction is taken off first, then the coefficient applies.
-const maxHealth = 20.0
-const flatReduction = {"blunt": 5.0}
-const coefficients = {"blunt": 0.5, "piercing": 2.0, "slash": 2.0, "heat": 3.0}
 const doorPassableAfter = 0.4
 const frameSeconds = 0.2
 const zipSound = preload("res://sfx/zip.ogg")
 
 var kind = "wall"
 var open = false
-var health = maxHealth
 
 var _hovering = false
 var _deflateEnd = -1
@@ -45,22 +39,6 @@ func setup(newKind: String, newOpen: bool = false) -> void :
 	open = newOpen
 	if is_node_ready():
 		_apply()
-
-# Returns the damage that got through the modifier set.
-func takeDamage(damageType: String, amount: float) -> float:
-	var dealt = maxf(0.0, amount - flatReduction.get(damageType, 0.0)) * coefficients.get(damageType, 1.0)
-	if dealt <= 0.0:
-		return 0.0
-	health -= dealt
-	if health <= 0.0:
-		remove_from_group("inflatables")
-		queue_free()
-	else:
-		var flash = create_tween()
-		sprite.modulate = Color(1, 0.45, 0.45)
-		flash.tween_property(sprite, "modulate", Color.WHITE, 0.2)
-	_persist()
-	return dealt
 
 func rect() -> Rect2:
 	return Rect2(global_position - size / 2.0, size)
