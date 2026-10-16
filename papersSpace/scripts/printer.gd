@@ -217,7 +217,7 @@ func ejectInsertedPaper() -> void :
 		return
 	insertedPaper.visible = true
 	insertedPaper.input_pickable = true
-	insertedPaper.collision_layer = 2
+	insertedPaper.collision_layer = 4
 	insertedPaper.freeze = false
 	insertedPaper.global_position = global_position + Vector2(0, 16)
 	insertedPaper = null
