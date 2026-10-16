@@ -107,7 +107,7 @@ func _init_all():
 
 func initItem(item: RigidBody2D):
 	if item.get_meta("type", "") != "txt":
-		SpriteBounds.fit(item)
+		SpriteBounds.fitPixels(item)
 	item.mouse_entered.connect(_on_mouse_entered.bind(item))
 	item.mouse_exited.connect(_on_mouse_exited.bind(item))
 	item.tree_exiting.connect(_on_item_removed.bind(item))

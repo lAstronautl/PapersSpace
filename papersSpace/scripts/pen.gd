@@ -29,4 +29,4 @@ func setVariant(newPenState: String) -> void :
 	var texture = load(texturePath)
 	get_node("CollisionShape2D/Sprite2D").texture = texture
 	get_node("CollisionShape2D/shadow").texture = texture
-	SpriteBounds.fit(self)
+	SpriteBounds.fitPixels(self)

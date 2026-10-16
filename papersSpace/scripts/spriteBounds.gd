@@ -38,6 +38,59 @@ static func halfExtents(texture: Texture2D) -> Vector2:
 	_cache[key] = half
 	return half
 
+# Outlines of the opaque pixels, in the sprite's local space (centre = origin).
+static var _outlines: Dictionary = {}
+const outlineEpsilon = 0.8
+
+static func outlines(texture: Texture2D) -> Array:
+	if texture == null:
+		return []
+	var key = texture.resource_path if texture.resource_path != "" else str(texture.get_instance_id())
+	if _outlines.has(key):
+		return _outlines[key]
+	var result = []
+	var image = texture.get_image()
+	if image:
+		if image.is_compressed():
+			image.decompress()
+		var bitmap = BitMap.new()
+		bitmap.create_from_image_alpha(image, alphaThreshold)
+		var half = Vector2(image.get_width(), image.get_height()) / 2.0
+		for polygon in bitmap.opaque_to_polygons(Rect2i(Vector2i.ZERO, image.get_size()), outlineEpsilon):
+			if polygon.size() < 3:
+				continue
+			var shifted = PackedVector2Array()
+			for point in polygon:
+				shifted.append(point - half)
+			result.append(shifted)
+	_outlines[key] = result
+	return result
+
+# The body collides only where the sprite has colour: the rectangle fit is kept as
+# the fallback for a sprite without a usable outline.
+static func fitPixels(item: RigidBody2D) -> void :
+	fit(item)
+	var shapeNode = item.get_node_or_null("CollisionShape2D")
+	var sprite = item.get_node_or_null("CollisionShape2D/Sprite2D")
+	if shapeNode == null or sprite == null:
+		return
+	for old in item.get_children():
+		if old.name.begins_with("PixelShape"):
+			item.remove_child(old)
+			old.queue_free()
+	var polygons = outlines(sprite.texture)
+	if polygons.is_empty():
+		shapeNode.disabled = false
+		return
+	shapeNode.disabled = true
+	var index = 0
+	for polygon in polygons:
+		var node = CollisionPolygon2D.new()
+		node.name = "PixelShape%d" % index
+		node.polygon = polygon
+		item.add_child(node)
+		index += 1
+
 static func fit(item: RigidBody2D) -> void :
 	var shapeNode = item.get_node_or_null("CollisionShape2D")
 	var sprite = item.get_node_or_null("CollisionShape2D/Sprite2D")

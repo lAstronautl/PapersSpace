@@ -20,4 +20,4 @@ func setVariant(kind: String, count: int = -1) -> void :
 	var texture = load(kinds[kind].texture)
 	get_node("CollisionShape2D/Sprite2D").texture = texture
 	get_node("CollisionShape2D/shadow").texture = texture
-	SpriteBounds.fit(self)
+	SpriteBounds.fitPixels(self)
