@@ -6,6 +6,8 @@ extends Area2D
 # deflated the same way. The Area2D is only for the cursor; the solid part is
 # the StaticBody2D, which items bump into.
 const size = Vector2(32, 32)
+# Solid for both item layers: tools (2) and papers (4).
+const solidLayers = 6
 const deflateSeconds = 3.0
 const doorPassableAfter = 0.4
 const frameSeconds = 0.2
@@ -48,7 +50,7 @@ func blocksMovement() -> bool:
 
 func _apply() -> void :
 	sprite.texture = _wallTexture if kind == "wall" else (_doorOpen if open else _doorClosed)
-	body.collision_layer = 0 if open else 2
+	body.collision_layer = 0 if open else solidLayers
 
 func _process(delta: float) -> void :
 	if _animTime >= 0.0:
@@ -90,7 +92,7 @@ func _toggleDoor() -> void :
 	_animTime = 0.0
 	_animFrames = _frames("res://png/structures/inflatable/door_opening.png" if _animOpening else "res://png/structures/inflatable/door_closing.png")
 	if not _animOpening:
-		body.collision_layer = 2
+		body.collision_layer = solidLayers
 	itemInteractionControler.playSoundAt(global_position, zipSound)
 
 # RSI sheets: 3 columns, six 32x32 frames, left to right and top to bottom.
