@@ -6,6 +6,7 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 
 @onready var closeButton: Button = $panel/layout/titleBar/close
 @onready var titleBar: HBoxContainer = $panel/layout/titleBar
+@onready var categoryOption: OptionButton = $panel/layout/categoryOption
 @onready var variantOption: OptionButton = $panel/layout/variantOption
 @onready var copyButton: Button = $panel/layout/buttons/copy
 @onready var printButton: Button = $panel/layout/buttons/print
@@ -25,8 +26,7 @@ func _ready() -> void :
 	printButton.pressed.connect(_on_print_pressed)
 	ejectButton.pressed.connect(_on_eject_pressed)
 
-	for variantId in PaperVariants.variants.keys():
-		variantOption.add_item(variantId)
+	categoryOption.item_selected.connect(func(_index): _fillVariants())
 
 	LanguageSwitcher.localeChanged.connect(_refreshLocaleStrings)
 	_refreshLocaleStrings()
@@ -36,6 +36,30 @@ func _refreshLocaleStrings() -> void :
 	copyButton.text = tr("ui_printer_copy")
 	printButton.text = tr("ui_printer_print")
 	ejectButton.text = tr("ui_printer_eject")
+	_fillCategories()
+
+# Category and paper names are looked up in the current language each time the
+# menus are rebuilt; the printable variant id is kept as item metadata so the
+# selection survives a language switch.
+func _fillCategories() -> void :
+	var selectedCategory = categoryOption.get_item_metadata(categoryOption.selected) if categoryOption.selected >= 0 else PaperVariants.categoryOrder[0]
+	categoryOption.clear()
+	for category in PaperVariants.categoryOrder:
+		categoryOption.add_item(tr("paper_cat_" + category))
+		categoryOption.set_item_metadata(categoryOption.item_count - 1, category)
+		if category == selectedCategory:
+			categoryOption.select(categoryOption.item_count - 1)
+	_fillVariants()
+
+func _fillVariants() -> void :
+	var selectedVariant = variantOption.get_item_metadata(variantOption.selected) if variantOption.selected >= 0 else ""
+	variantOption.clear()
+	var category = categoryOption.get_item_metadata(categoryOption.selected)
+	for variantId in PaperVariants.getVariantIdsInCategory(category):
+		variantOption.add_item(PaperVariants.getDisplayName(variantId))
+		variantOption.set_item_metadata(variantOption.item_count - 1, variantId)
+		if variantId == selectedVariant:
+			variantOption.select(variantOption.item_count - 1)
 
 func open(printerNode) -> void :
 	currentPrinter = printerNode
@@ -69,7 +93,7 @@ func _on_copy_pressed() -> void :
 	currentPrinter.startCopy()
 
 func _on_print_pressed() -> void :
-	var variantId = variantOption.get_item_text(variantOption.selected) if variantOption.selected >= 0 else "default"
+	var variantId = variantOption.get_item_metadata(variantOption.selected) if variantOption.selected >= 0 else "default"
 	currentPrinter.startPrint(variantId)
 
 func _on_eject_pressed() -> void :

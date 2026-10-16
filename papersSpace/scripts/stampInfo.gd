@@ -53,6 +53,13 @@ const stampData = {
 	"subea": {"name": "stamp_name_subea", "color": "#b30e0e"},  # RubberStampAnCoSubea
 	"lvhi": {"name": "stamp_name_lvhi", "color": "#e26817", "mark": "nf-engineer"},  # RubberStampLVHI
 	"trauma": {"name": "stamp_name_trauma", "color": "#ff0303", "mark": "nf-stc"},  # RubberStampTrauma
+	# --- preset stamps (generated): stamps a printed form already carries; not spawnable ---
+	"preset-dead-drop-fax": {"name": "stamp_name_preset_dead_drop_fax", "color": "#850000", "mark": "syndicate", "nospawn": true},
+	"preset-dead-drop-hint": {"name": "stamp_name_preset_dead_drop_hint", "color": "#850000", "mark": "generic", "nospawn": true},
+	"preset-frontier-birthday": {"name": "stamp_name_preset_frontier_birthday", "color": "#006600", "mark": "centcom", "nospawn": true},
+	"preset-frontier-fridge": {"name": "stamp_name_preset_frontier_fridge", "color": "#333333", "mark": "centcom", "nospawn": true},
+	"preset-party-procedure": {"name": "stamp_name_preset_party_procedure", "color": "#333333", "mark": "centcom", "nospawn": true},
+	# --- end preset stamps ---
 }
 
 # Keys that older saves used before every prototype got its own entry.
@@ -64,7 +71,7 @@ static func resolveKey(stampState: String) -> String:
 	return keyAliases.get(stampState, stampState)
 
 static func getStampKeys() -> Array:
-	return stampData.keys()
+	return stampData.keys().filter(func(key): return not stampData[key].get("nospawn", false))
 
 static func getStampName(stampState: String) -> String:
 	return stampData.get(resolveKey(stampState), {}).get("name", "stamp_name_default")

@@ -204,7 +204,7 @@ func startPrint(paperVariant: String) -> void :
 	_playBuildAnim(func():
 		toner -= tonerPerPage
 		busy = false
-		_spawnPaper(paperVariant, PaperVariants.getContent(paperVariant), [])
+		_spawnPaper(paperVariant, PaperVariants.getContent(paperVariant), PaperVariants.getPresetStamps(paperVariant))
 	)
 
 func ejectInsertedPaper() -> void :

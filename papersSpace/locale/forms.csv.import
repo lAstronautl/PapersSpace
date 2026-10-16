@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://ch4yvlslejvuj"
+
+[deps]
+
+files=["res://locale/forms.en.translation", "res://locale/forms.ru.translation"]
+
+source_file="res://locale/forms.csv"
+dest_files=["res://locale/forms.en.translation", "res://locale/forms.ru.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

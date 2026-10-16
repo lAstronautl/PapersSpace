@@ -105,7 +105,7 @@ spawnStamp={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://locale/translations.en.translation", "res://locale/translations.ru.translation")
+locale/translations=PackedStringArray("res://locale/translations.en.translation", "res://locale/translations.ru.translation", "res://locale/forms.en.translation", "res://locale/forms.ru.translation")
 
 [physics]
 
