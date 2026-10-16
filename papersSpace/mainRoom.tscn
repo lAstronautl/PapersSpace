@@ -198,7 +198,7 @@ penState = "cyber"
 position = Vector2(165, 30)
 
 [node name="paperScrap" parent="worldView/worldViewport/items" instance=ExtResource("39")]
-position = Vector2(180, 60)
+position = Vector2(140, 90)
 
 [node name="tutorialPaper" parent="worldView/worldViewport/items" instance=ExtResource("3")]
 position = Vector2(96, 60)
