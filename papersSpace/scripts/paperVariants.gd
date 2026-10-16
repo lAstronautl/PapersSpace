@@ -21,7 +21,7 @@ extends Node
 # bottom) like a CSS/UI Thickness. Every Vector4 below has already been
 # reordered from that YAML (left,bottom,right,top) into Godot's
 # Vector4(left, top, right, bottom) - so .x=left, .y=top, .z=right, .w=bottom
-# throughout this file and in paperBackground.gd/fileEditor.gd. Symmetric
+# throughout this file and in fileEditor.gd. Symmetric
 # values (top==bottom) are unaffected either way; only asymmetric ones
 # (e.g. headerMargin on cargo_invoice/artifact_analyzer,
 # contentMargin on captains_thoughts/artifact_analyzer) actually needed
@@ -35,7 +35,7 @@ extends Node
 const variants = {
 	# Paper has an empty PaperVisuals in SS14, so its window uses the
 	# "PaperDefaultBorder" style (default border tinted light cream) - see
-	# paperBackground.gd. Same for the variants below that only add content.
+	# fileEditor.gd (_apply_visuals). Same for the variants below that only add content.
 	"default": {
 		"visuals": {},
 	},

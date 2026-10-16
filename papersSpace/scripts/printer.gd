@@ -2,7 +2,6 @@ extends Area2D
 
 signal opened(printerNode)
 
-const PaperBackground = preload("res://scripts/paperBackground.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
 
 const maxToner = 30
