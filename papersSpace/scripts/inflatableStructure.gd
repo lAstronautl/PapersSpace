@@ -16,6 +16,7 @@ var open = false
 
 var _hovering = false
 var _deflateEnd = -1
+var _deflateBar = null
 var _animFrames: Array = []
 var _animTime = -1.0
 var _animOpening = false
@@ -65,8 +66,10 @@ func _process(delta: float) -> void :
 	if _deflateEnd >= 0:
 		if not _hovering or itemInteractionControler.dragging:
 			_deflateEnd = -1
+			_deflateBar.cancel()
 		elif Time.get_ticks_msec() >= _deflateEnd:
 			_deflateEnd = -1
+			_deflateBar.finish()
 			_deflate()
 
 func _input(event: InputEvent) -> void :
@@ -80,6 +83,7 @@ func _input(event: InputEvent) -> void :
 			_toggleDoor()
 	elif _deflateEnd < 0:
 		_deflateEnd = Time.get_ticks_msec() + int(deflateSeconds * 1000.0)
+		_deflateBar = itemInteractionControler.startDoAfter(self, deflateSeconds, size.y / 2.0)
 
 func _toggleDoor() -> void :
 	_animOpening = not open

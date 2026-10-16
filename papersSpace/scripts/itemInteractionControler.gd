@@ -4,6 +4,7 @@ const StampInfo = preload("res://scripts/stampInfo.gd")
 const PenInfo = preload("res://scripts/penInfo.gd")
 const SignerName = preload("res://scripts/signerName.gd")
 const penClickSound = preload("res://sfx/pen_click.ogg")
+const DoAfterBar = preload("res://scripts/doAfterBar.gd")
 const ratchetSound = preload("res://sfx/ratchet.ogg")
 const PaperSounds = preload("res://scripts/paperSounds.gd")
 const PaperVariants = preload("res://scripts/paperVariants.gd")
@@ -324,6 +325,19 @@ func _consumeCartridge(cartridge: RigidBody2D) -> void :
 
 var _activeNotices = {}
 
+func worldScale() -> Vector2:
+	return worldViewContainer.size / Vector2(worldViewContainer.get_node("worldViewport").size)
+
+# A do-after bar above `target` (see doAfterBar.gd); the caller cancels or finishes it.
+func startDoAfter(target: Node2D, seconds: float, halfHeight: float):
+	var bar = DoAfterBar.new()
+	editorsLayer.add_child(bar)
+	bar.begin(target, self, seconds, halfHeight)
+	return bar
+
+func worldToScreen(worldPos: Vector2) -> Vector2:
+	return _worldToScreen(worldPos)
+
 func _worldToScreen(worldPos: Vector2) -> Vector2:
 	# floatingNotice text must render in the crisp UI layer (outside the
 	# pixel-art worldViewport) to avoid being upscaled/blurred, so world
@@ -374,6 +388,7 @@ func _process(_delta: float) -> void :
 # sound at the start. The do-after is cancelled when the wrench is let go or
 # leaves the structure.
 var _wrenchAction: Dictionary = {}
+const itemBarOffset = 9.0
 
 func isHoldingWrench() -> bool:
 	return dragging and heldItem != null and heldItem.get_meta("type", "") == "wrench"
@@ -393,7 +408,8 @@ func useWrench(wrench: RigidBody2D) -> void :
 	if anchorable == null:
 		return
 	playSoundAt(wrench.global_position, ratchetSound)
-	_wrenchAction = {"wrench": wrench, "anchorable": anchorable, "end": Time.get_ticks_msec() + int(anchorable.delaySeconds * 1000.0)}
+	_wrenchAction = {"wrench": wrench, "anchorable": anchorable, "end": Time.get_ticks_msec() + int(anchorable.delaySeconds * 1000.0),
+		"bar": startDoAfter(wrench, anchorable.delaySeconds, itemBarOffset)}
 
 func _updateWrenchAction() -> void :
 	if _wrenchAction.is_empty():
@@ -402,10 +418,12 @@ func _updateWrenchAction() -> void :
 	var anchorable = _wrenchAction.anchorable
 	if not is_instance_valid(wrench) or not isHoldingWrench() or heldItem != wrench \
 			or _anchorableUnder(wrench) != anchorable:
+		_wrenchAction.bar.cancel()
 		_wrenchAction = {}
 		return
 	if Time.get_ticks_msec() < _wrenchAction.end:
 		return
+	_wrenchAction.bar.finish()
 	_wrenchAction = {}
 	anchorable.toggle()
 	playFeedback(anchorable.structure.global_position, null, tr("ui_anchored") if anchorable.anchored else tr("ui_unanchored"))
@@ -438,7 +456,8 @@ func useInflatable(stack: RigidBody2D) -> void :
 	if not roomBounds.has_point(cell) or not _cellFree(cell):
 		playFeedback(stack.global_position, null, tr("ui_tile_occupied"), true)
 		return
-	_placeAction = {"stack": stack, "cell": cell, "end": Time.get_ticks_msec() + int(placeSeconds * 1000.0)}
+	_placeAction = {"stack": stack, "cell": cell, "end": Time.get_ticks_msec() + int(placeSeconds * 1000.0),
+		"bar": startDoAfter(stack, placeSeconds, itemBarOffset)}
 
 func _updatePlaceAction() -> void :
 	if _placeAction.is_empty():
@@ -446,11 +465,13 @@ func _updatePlaceAction() -> void :
 	var stack = _placeAction.stack
 	if not is_instance_valid(stack) or not dragging or heldItem != stack \
 			or _cellAt(mousePin.global_position) != _placeAction.cell:
+		_placeAction.bar.cancel()
 		_placeAction = {}
 		return
 	if Time.get_ticks_msec() < _placeAction.end:
 		return
 	var cell = _placeAction.cell
+	_placeAction.bar.finish()
 	_placeAction = {}
 	if not _cellFree(cell):
 		playFeedback(stack.global_position, null, tr("ui_tile_occupied"), true)
