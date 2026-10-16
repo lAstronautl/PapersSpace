@@ -449,8 +449,27 @@ func _cellFree(cell: Vector2) -> bool:
 			return false
 	return true
 
+# StackSystem: using a stack on another stack of the same kind lying under it pours
+# the held one into it (the folded pieces left by deflated walls join up this way).
+const stackMergeRadius = 14.0
+
+func _mergeStacks(held: RigidBody2D) -> bool:
+	for other in itemsParent.get_children():
+		if other == held or other.get_meta("type", "") != "inflatable" or other.get_meta("kind", "") != held.get_meta("kind", "wall"):
+			continue
+		if other.global_position.distance_to(held.global_position) > stackMergeRadius:
+			continue
+		other.set_meta("count", other.get_meta("count", 1) + held.get_meta("count", 1))
+		endDrag(held)
+		forgetItem(held)
+		held.queue_free()
+		return true
+	return false
+
 func useInflatable(stack: RigidBody2D) -> void :
 	if not _placeAction.is_empty():
+		return
+	if _mergeStacks(stack):
 		return
 	var cell = _cellAt(mousePin.global_position)
 	if not roomBounds.has_point(cell) or not _cellFree(cell):
