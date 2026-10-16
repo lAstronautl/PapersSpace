@@ -217,8 +217,6 @@ script = ExtResource("8")
 [node name="spawner" type="Node2D" parent="worldView/worldViewport/mousePin" unique_id=529259095]
 script = ExtResource("9")
 pointingArrow = ExtResource("10")
-stampScene = ExtResource("30")
-penScene = ExtResource("32")
 
 [node name="lighting" type="Node2D" parent="worldView/worldViewport" unique_id=1954564798]
 
