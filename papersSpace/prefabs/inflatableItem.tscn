@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Material" uid="uid://bsea5sow584ri" path="res://shaders/outline.tres" id="1"]
+[ext_resource type="Texture2D" path="res://png/item/inflatable/item_wall.png" id="2"]
+[ext_resource type="Script" path="res://scripts/inflatableItem.gd" id="3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_infi"]
+size = Vector2(16, 14)
+
+[node name="inflatable" type="RigidBody2D"]
+y_sort_enabled = true
+collision_layer = 2
+collision_mask = 2
+input_pickable = true
+script = ExtResource("3")
+metadata/type = "inflatable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_infi")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("2")
+
+[node name="shadow" type="Sprite2D" parent="CollisionShape2D"]
+modulate = Color(0, 0, 0, 0.39215687)
+show_behind_parent = true
+texture_filter = 1
+material = ExtResource("1")
+use_parent_material = true
+texture = ExtResource("2")

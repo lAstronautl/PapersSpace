@@ -14,6 +14,7 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 @export var tonerInsertSound: AudioStream
 
 @onready var mousePin: PinJoint2D = $"../mousePin"
+@onready var structuresNode: Node2D = $"../structures"
 @onready var fakeBody: StaticBody2D = $"../mousePin/fakeBody"
 @onready var itemsParent: Node2D = $"../items"
 @onready var label: Label = $"../../../hoverLabel"
@@ -177,6 +178,10 @@ func getItemDisplayName(item: Node) -> String:
 	match item.get_meta("type", ""):
 		"wrench":
 			return tr("ui_vend_item_wrench")
+		"inflatable":
+			var count = item.get_meta("count", 1)
+			var itemName = tr("ui_vend_item_inflatable_" + item.get_meta("kind", "wall"))
+			return itemName if count <= 1 else "%s x%d" % [itemName, count]
 		"pen":
 			return tr(PenInfo.getName(item.get_meta("penState", "pen")))
 		"stamp":
@@ -185,7 +190,7 @@ func getItemDisplayName(item: Node) -> String:
 			return item.name if translated == key else translated
 	return item.name
 
-func _playSoundAt(atPosition: Vector2, sound: AudioStream, volumeDb: float = 0.0) -> void :
+func playSoundAt(atPosition: Vector2, sound: AudioStream, volumeDb: float = 0.0) -> void :
 	if not sound:
 		return
 	var audioPlayer = AudioStreamPlayer2D.new()
@@ -229,7 +234,7 @@ func applyStampToOverlaps(stampItem: RigidBody2D) -> void :
 			# the stamp, so the sound, message and delay always follow.
 			if _canStamp(stamps, stampItem.stampState):
 				_addStampToPaper(body, {"stampState": stampItem.stampState})
-			_playSoundAt(stampItem.global_position, StampInfo.getStampSound(stampItem.stampState), -2.0)
+			playSoundAt(stampItem.global_position, StampInfo.getStampSound(stampItem.stampState), -2.0)
 			playFeedback(stampItem.global_position, null, tr("ui_stamp_applied") % [body.name, getItemDisplayName(stampItem)])
 			_setDelay(stampItem, "stamp", PenInfo.stampDelaySeconds)
 
@@ -291,7 +296,7 @@ func applyPenToOverlaps(penItem: RigidBody2D, signOnly: bool = false) -> int:
 func clickPen(penItem: RigidBody2D) -> void :
 	if _isDelayed(penItem, "click"):
 		return
-	_playSoundAt(penItem.global_position, penClickSound, -4.0)
+	playSoundAt(penItem.global_position, penClickSound, -4.0)
 	_setDelay(penItem, "click", PenInfo.clickDelaySeconds)
 
 # Mirrors SS14's TonerCartridgeSystem "Refill toner" verb, but single-use:
@@ -362,6 +367,7 @@ func _process(_delta: float) -> void :
 	if label.visible:
 		label.position = label.get_viewport().get_mouse_position() + Vector2(6, -3)
 	_updateWrenchAction()
+	_updatePlaceAction()
 
 # Using the wrench in hand ("Anchoring" tool quality): the structure under it is
 # unbolted or bolted after AnchorableComponent's 1 s delay, with the ratchet
@@ -372,19 +378,21 @@ var _wrenchAction: Dictionary = {}
 func isHoldingWrench() -> bool:
 	return dragging and heldItem != null and heldItem.get_meta("type", "") == "wrench"
 
-func _anchorableUnder(point: Vector2):
+# The structure the wrench works on: the one under the cursor, or else the one
+# under the tool itself.
+func _anchorableUnder(wrench: RigidBody2D):
 	for anchorable in get_tree().get_nodes_in_group("anchorables"):
-		if anchorable.rect().has_point(point):
+		if anchorable.rect().has_point(mousePin.global_position) or anchorable.rect().has_point(wrench.global_position):
 			return anchorable
 	return null
 
 func useWrench(wrench: RigidBody2D) -> void :
 	if not _wrenchAction.is_empty():
 		return
-	var anchorable = _anchorableUnder(wrench.global_position)
+	var anchorable = _anchorableUnder(wrench)
 	if anchorable == null:
 		return
-	_playSoundAt(wrench.global_position, ratchetSound)
+	playSoundAt(wrench.global_position, ratchetSound)
 	_wrenchAction = {"wrench": wrench, "anchorable": anchorable, "end": Time.get_ticks_msec() + int(anchorable.delaySeconds * 1000.0)}
 
 func _updateWrenchAction() -> void :
@@ -393,7 +401,7 @@ func _updateWrenchAction() -> void :
 	var wrench = _wrenchAction.wrench
 	var anchorable = _wrenchAction.anchorable
 	if not is_instance_valid(wrench) or not isHoldingWrench() or heldItem != wrench \
-			or not anchorable.rect().has_point(wrench.global_position):
+			or _anchorableUnder(wrench) != anchorable:
 		_wrenchAction = {}
 		return
 	if Time.get_ticks_msec() < _wrenchAction.end:
@@ -401,6 +409,60 @@ func _updateWrenchAction() -> void :
 	_wrenchAction = {}
 	anchorable.toggle()
 	playFeedback(anchorable.structure.global_position, null, tr("ui_anchored") if anchorable.anchored else tr("ui_unanchored"))
+
+# SpawnAfterInteract (InflatableWallStack / InflatableDoorStack): using the stack
+# unfolds one piece on the tile under the cursor after 1 s; the stack is used up
+# with its last piece. Cancelled when the stack is let go or the cursor moves
+# to another tile.
+const tileSize = 32.0
+const placeSeconds = 1.0
+var _placeAction: Dictionary = {}
+
+func _cellAt(point: Vector2) -> Vector2:
+	return (point / tileSize).floor() * tileSize + Vector2(tileSize, tileSize) / 2.0
+
+func _cellFree(cell: Vector2) -> bool:
+	var footprint = Rect2(cell - Vector2(tileSize, tileSize) / 2.0, Vector2(tileSize, tileSize))
+	for anchorable in get_tree().get_nodes_in_group("anchorables"):
+		if footprint.intersects(anchorable.rect()):
+			return false
+	for inflatable in get_tree().get_nodes_in_group("inflatables"):
+		if footprint.intersects(inflatable.rect()):
+			return false
+	return true
+
+func useInflatable(stack: RigidBody2D) -> void :
+	if not _placeAction.is_empty():
+		return
+	var cell = _cellAt(mousePin.global_position)
+	if not roomBounds.has_point(cell) or not _cellFree(cell):
+		playFeedback(stack.global_position, null, tr("ui_tile_occupied"), true)
+		return
+	_placeAction = {"stack": stack, "cell": cell, "end": Time.get_ticks_msec() + int(placeSeconds * 1000.0)}
+
+func _updatePlaceAction() -> void :
+	if _placeAction.is_empty():
+		return
+	var stack = _placeAction.stack
+	if not is_instance_valid(stack) or not dragging or heldItem != stack \
+			or _cellAt(mousePin.global_position) != _placeAction.cell:
+		_placeAction = {}
+		return
+	if Time.get_ticks_msec() < _placeAction.end:
+		return
+	var cell = _placeAction.cell
+	_placeAction = {}
+	if not _cellFree(cell):
+		playFeedback(stack.global_position, null, tr("ui_tile_occupied"), true)
+		return
+	structuresNode.place("wall" if stack.get_meta("kind", "wall") == "wall" else "door", cell)
+	var left = stack.get_meta("count", 1) - 1
+	if left <= 0:
+		endDrag(stack)
+		forgetItem(stack)
+		stack.queue_free()
+	else:
+		stack.set_meta("count", left)
 
 # Whether a left click would grab an unanchored structure.
 func structureGrabbable() -> bool:
@@ -444,6 +506,8 @@ func _physics_process(delta: float) -> void :
 				applyTonerCartridgeToPrinter(heldItem)
 			elif heldType == "wrench":
 				useWrench(heldItem)
+			elif heldType == "inflatable":
+				useInflatable(heldItem)
 
 		# The pen's "Sign" verb.
 		if Input.is_action_just_pressed("signDocument") and heldItem.get_meta("type", "") == "pen":

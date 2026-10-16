@@ -10,7 +10,7 @@ const delaySeconds = 1.0
 const dragSpeed = 36.0
 const bounds = Rect2(16, 16, 160, 160)
 const bodySize = Vector2(30, 32)
-const savePath = "user://structures.save"
+const StructureSave = preload("res://scripts/structureSave.gd")
 
 var anchored = true
 var _hovering = false
@@ -65,28 +65,22 @@ func _blocked(at: Vector2) -> bool:
 	for other in get_tree().get_nodes_in_group("anchorables"):
 		if other != self and footprint.intersects(other.rect()):
 			return true
+	for inflatable in get_tree().get_nodes_in_group("inflatables"):
+		if inflatable.blocksMovement() and footprint.intersects(inflatable.rect()):
+			return true
 	return false
 
 func _itemControler() -> Node2D:
 	return $"../../itemInteractionControler"
 
-func _data() -> Dictionary:
-	var file = FileAccess.open(savePath, FileAccess.READ)
-	if not file:
-		return {}
-	var parsed = JSON.parse_string(file.get_as_text())
-	return parsed if parsed is Dictionary else {}
-
 func _load() -> void :
-	var saved = _data().get(structure.name)
+	var saved = StructureSave.read().get(structure.name)
 	if not saved is Dictionary:
 		return
 	anchored = saved.get("anchored", true)
 	structure.position = Vector2(saved.get("x", structure.position.x), saved.get("y", structure.position.y))
 
 func _save() -> void :
-	var data = _data()
+	var data = StructureSave.read()
 	data[structure.name] = {"anchored": anchored, "x": structure.position.x, "y": structure.position.y}
-	var file = FileAccess.open(savePath, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify(data))
+	StructureSave.write(data)

@@ -14,6 +14,7 @@ const PaperVariants = preload("res://scripts/paperVariants.gd")
 @export var tonerCartridgeScene: PackedScene
 @export var paperScrapScene: PackedScene
 @export var wrenchScene: PackedScene
+@export var inflatableScene: PackedScene
 
 var saveFilePath = "user://items.save"
 var customBGPath = "user://background.png"
@@ -147,6 +148,21 @@ func createPaper(paperVariant: String, content: String, stamps: Array, baseName:
 		item.get_node("CollisionShape2D/StampOverlay").loadStamps(stamps)
 	return item
 
+# One folded piece of an inflatable (a deflated wall or door): it joins a stack of
+# the same kind lying close by, otherwise it becomes a new stack of one.
+func addFoldedPiece(kind: String, at: Vector2) -> void :
+	for item in itemsParent.get_children():
+		if item.get_meta("type", "") == "inflatable" and item.get_meta("kind", "") == kind \
+				and item.global_position.distance_to(at) < 24.0:
+			item.set_meta("count", item.get_meta("count", 1) + 1)
+			return
+	var item = inflatableScene.instantiate()
+	item.name = "inflatable-" + kind
+	item.position = at
+	$"../itemInteractionControler".initItem(item)
+	itemsParent.add_child(item)
+	item.setVariant(kind, 1)
+
 func getSceneFromType(type: String) -> PackedScene:
 	match type:
 		"txt":
@@ -167,6 +183,8 @@ func getSceneFromType(type: String) -> PackedScene:
 			return paperScrapScene
 		"wrench":
 			return wrenchScene
+		"inflatable":
+			return inflatableScene
 	return null
 
 func loadBG(path: String):

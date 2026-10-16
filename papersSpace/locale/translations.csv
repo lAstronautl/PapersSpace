@@ -121,3 +121,6 @@ ui_vend_item_paperScrap,paper scrap,клочок бумаги
 ui_vend_item_wrench,wrench,гаечный ключ
 ui_anchored,Anchored,Закреплено
 ui_unanchored,Unanchored,Не закреплено
+ui_vend_item_inflatable_wall,inflatable barricade,надувной барьер
+ui_vend_item_inflatable_door,inflatable door,надувная дверь
+ui_tile_occupied,Tile occupied,Плитка уже занята

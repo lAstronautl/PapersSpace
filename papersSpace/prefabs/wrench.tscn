@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://bsea5sow584ri" path="res://shaders/outline.tres" id="1"]
 [ext_resource type="Texture2D" path="res://png/item/wrench/wrench.png" id="2"]
-[ext_resource type="Script" uid="uid://chctncmofsrfq" path="res://scripts/sfxOnCollide.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/sfxOnLand.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wrn1"]
 size = Vector2(16, 16)
@@ -12,8 +12,6 @@ y_sort_enabled = true
 collision_layer = 2
 collision_mask = 2
 input_pickable = true
-contact_monitor = true
-max_contacts_reported = 2
 metadata/type = "wrench"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

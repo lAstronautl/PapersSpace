@@ -17,6 +17,11 @@ const otherItems = {
 	"wrench": "res://png/item/wrench/wrench.png",
 }
 
+const inflatables = {
+	"wall": "res://png/item/inflatable/item_wall.png",
+	"door": "res://png/item/inflatable/item_door.png",
+}
+
 static func entries() -> Array:
 	var list: Array = []
 	for key in PenInfo.getPenKeys():
@@ -25,6 +30,8 @@ static func entries() -> Array:
 		list.append({"kind": "stamp", "key": key})
 	for key in otherItems:
 		list.append({"kind": "item", "key": key})
+	for key in inflatables:
+		list.append({"kind": "inflatable", "key": key})
 	for category in PaperVariants.categoryOrder:
 		for variantId in PaperVariants.getVariantIdsInCategory(category):
 			list.append({"kind": "paper", "key": variantId})
@@ -42,6 +49,8 @@ static func getName(entry: Dictionary) -> String:
 			return key if translated == nameKey else translated
 		"paper":
 			return PaperVariants.getDisplayName(key)
+	if entry.kind == "inflatable":
+		return TranslationServer.translate("ui_vend_item_inflatable_" + key)
 	return TranslationServer.translate("ui_vend_item_" + key)
 
 static func getIcon(entry: Dictionary) -> Texture2D:
@@ -52,6 +61,8 @@ static func getIcon(entry: Dictionary) -> Texture2D:
 			path = "res://png/item/pens/pen-" + key + ".png"
 		"stamp":
 			path = "res://png/item/stamps/stamp-" + StampInfo.resolveKey(key) + ".png"
+		"inflatable":
+			path = inflatables[key]
 		"paper":
 			path = PaperVariants.getConfig(key).get("worldTexture", "res://png/item/paper/paper.png")
 		_:

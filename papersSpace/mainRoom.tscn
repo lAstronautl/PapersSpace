@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bf772ynb2pq3" path="res://prefabs/weh.tscn" id="4"]
 [ext_resource type="Script" uid="uid://coaqq387jvfdj" path="res://scripts/itemInteractionControler.gd" id="5"]
 [ext_resource type="Texture2D" uid="uid://c4veskq11ypb4" path="res://png/tile/dark.png" id="6"]
-[ext_resource type="PackedScene" uid="uid://c46obxc76l6in" path="res://prefabs/AO.tscn" id="7"]
 [ext_resource type="Script" uid="uid://ssw7bmi20qq2" path="res://scripts/onMousePosition.gd" id="8"]
 [ext_resource type="Script" uid="uid://15oyexrf2j6d" path="res://scripts/spawner.gd" id="9"]
 [ext_resource type="PackedScene" uid="uid://m618yotj3ngp" path="res://prefabs/pointingArrow.tscn" id="10"]
@@ -36,9 +35,9 @@
 [ext_resource type="Texture2D" path="res://png/background/space_stars.png" id="44"]
 [ext_resource type="PackedScene" path="res://prefabs/vending.tscn" id="45"]
 [ext_resource type="PackedScene" path="res://prefabs/wrench.tscn" id="46"]
+[ext_resource type="PackedScene" path="res://prefabs/inflatableItem.tscn" id="48"]
+[ext_resource type="Script" path="res://scripts/structures.gd" id="49"]
 [ext_resource type="Script" path="res://scripts/anchorable.gd" id="47"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_club8"]
 
 [node name="root" type="Control" unique_id=338956204]
 layout_mode = 3
@@ -92,6 +91,7 @@ penScene = ExtResource("32")
 tonerCartridgeScene = ExtResource("38")
 paperScrapScene = ExtResource("39")
 wrenchScene = ExtResource("46")
+inflatableScene = ExtResource("48")
 
 [node name="itemInteractionControler" type="Node2D" parent="worldView/worldViewport" unique_id=499599145]
 script = ExtResource("5")
@@ -110,50 +110,6 @@ offset_right = 192.0
 offset_bottom = 192.0
 texture = ExtResource("6")
 stretch_mode = 1
-
-[node name="AOs" type="Node2D" parent="worldView/worldViewport/env" unique_id=490535075]
-
-[node name="AO" parent="worldView/worldViewport/env/AOs" unique_id=880579369 instance=ExtResource("7")]
-z_index = -2
-scale = Vector2(1, 6)
-
-[node name="AO2" parent="worldView/worldViewport/env/AOs" unique_id=1766801565 instance=ExtResource("7")]
-z_index = -2
-position = Vector2(192, 192.00002)
-rotation = -3.1415925
-scale = Vector2(1, 6)
-
-[node name="AO3" parent="worldView/worldViewport/env/AOs" unique_id=599174113 instance=ExtResource("7")]
-z_index = -2
-position = Vector2(-3.8146973e-06, 192)
-rotation = -1.5707964
-scale = Vector2(1, 6)
-
-[node name="AO4" parent="worldView/worldViewport/env/AOs" unique_id=1215818461 instance=ExtResource("7")]
-z_index = -2
-position = Vector2(192, 0)
-rotation = 1.5707964
-scale = Vector2(1, 6)
-
-[node name="walls" type="StaticBody2D" parent="worldView/worldViewport/env" unique_id=1364573343]
-
-[node name="west" type="CollisionShape2D" parent="worldView/worldViewport/env/walls" unique_id=1449966540]
-rotation = 1.5707964
-shape = SubResource("WorldBoundaryShape2D_club8")
-
-[node name="north" type="CollisionShape2D" parent="worldView/worldViewport/env/walls" unique_id=326486649]
-rotation = 3.1415927
-shape = SubResource("WorldBoundaryShape2D_club8")
-
-[node name="east" type="CollisionShape2D" parent="worldView/worldViewport/env/walls" unique_id=1185772373]
-position = Vector2(192, 192)
-rotation = 4.712389
-shape = SubResource("WorldBoundaryShape2D_club8")
-
-[node name="south" type="CollisionShape2D" parent="worldView/worldViewport/env/walls" unique_id=566149282]
-position = Vector2(192, 192)
-rotation = 6.2831855
-shape = SubResource("WorldBoundaryShape2D_club8")
 
 [node name="printer" parent="worldView/worldViewport" instance=ExtResource("35")]
 position = Vector2(170, 100)
@@ -176,6 +132,10 @@ position = Vector2(170, 56)
 
 [node name="Anchorable" type="Node" parent="worldView/worldViewport/vending"]
 script = ExtResource("47")
+
+[node name="structures" type="Node2D" parent="worldView/worldViewport"]
+y_sort_enabled = true
+script = ExtResource("49")
 
 [node name="items" type="Node2D" parent="worldView/worldViewport" unique_id=851823581]
 y_sort_enabled = true

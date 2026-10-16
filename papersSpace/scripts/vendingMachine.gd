@@ -186,6 +186,9 @@ func _spawn(entry: Dictionary) -> void :
 		"pen":
 			item = itemLoader.penScene.instantiate()
 			item.name = _uniqueName("pen-" + key)
+		"inflatable":
+			item = itemLoader.inflatableScene.instantiate()
+			item.name = _uniqueName("inflatable-" + key)
 		"stamp":
 			item = itemLoader.stampScene.instantiate()
 			item.name = _uniqueName("stamp-" + key)
@@ -196,7 +199,7 @@ func _spawn(entry: Dictionary) -> void :
 	itemInteractionControler.initItem(item)
 	itemsParent.add_child(item)
 	match entry.kind:
-		"pen", "stamp":
+		"pen", "stamp", "inflatable":
 			item.setVariant(key)
 
 func _uniqueName(baseName: String) -> String:
